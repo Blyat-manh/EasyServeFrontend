@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { apiUrl } from '../App';
 
 const ViewCash = () => {
   const [cash, setCash] = useState([]);
@@ -7,7 +8,7 @@ const ViewCash = () => {
 
   useEffect(() => {
     // Fetch cash records from API
-    axios.get('http://localhost:5000/api/cash')
+    axios.get(apiUrl,'/api/cash')
       .then(response => setCash(response.data))
       .catch(error => console.error('Error fetching cash records:', error));
   }, []);

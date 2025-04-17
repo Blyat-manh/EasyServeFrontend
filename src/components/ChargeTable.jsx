@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import React from 'react';
+import { apiUrl } from '../App';
 
 const ChargeTable = () => {
   const [table, setTable] = useState('');
@@ -7,7 +9,7 @@ const ChargeTable = () => {
   const [total, setTotal] = useState(0);
 
   const handleChargeTable = () => {
-    axios.get(`http://localhost:5000/api/orders/table/${table}`)
+    axios.get(apiUrl,`/api/orders/table/${table}`)
       .then(response => {
         setOrders(response.data);
         const totalAmount = response.data.reduce((sum, order) => sum + order.total, 0);
@@ -17,7 +19,7 @@ const ChargeTable = () => {
   };
 
   const handleMarkAsPaid = () => {
-    axios.post(`http://localhost:5000/api/orders/charge/${table}`)
+    axios.post(apiUrl,`/api/orders/charge/${table}`)
       .then(() => console.log('Table charged'))
       .catch(error => console.error('Error charging table:', error));
   };

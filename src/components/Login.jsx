@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { apiUrl } from '../App';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -11,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', { username, password });
+      const response = await axios.post(apiUrl,'/api/users/login', { username, password });
       localStorage.setItem('token', response.data.token);
       history('/dashboard');
     } catch (error) {

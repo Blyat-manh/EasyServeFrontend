@@ -6,6 +6,7 @@ import EmployeeManagement from './components/EmployeeManagement'
 import InventoryManagement from './components/InventoryManagement'
 import PlaceOrder from './components/PlaceOrder'
 
+export const apiUrl ="easyservebackend-production.up.railway.app"
 
 function App() {
   return (

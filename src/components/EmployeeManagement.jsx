@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import React from 'react';
+import { apiUrl } from '../App';
 
 const EmployeeManagement = () => {
   const [employees, setEmployees] = useState([]);
@@ -7,7 +9,7 @@ const EmployeeManagement = () => {
 
   useEffect(() => {
     // Fetch employees from API
-    axios.get('http://localhost:5000/api/employees')
+    axios.get(apiUrl,'/api/employees')
       .then(response => setEmployees(response.data))
       .catch(error => console.error('Error fetching employees:', error));
   }, []);
@@ -18,7 +20,7 @@ const EmployeeManagement = () => {
   };
 
   const handleAddEmployee = () => {
-    axios.post('http://localhost:5000/api/employees', newEmployee)
+    axios.post(apiUrl,'/api/employees', newEmployee)
       .then(response => setEmployees([...employees, response.data]))
       .catch(error => console.error('Error adding employee:', error));
   };
