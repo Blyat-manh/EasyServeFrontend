@@ -12,7 +12,7 @@ const Login = () => {
     e.preventDefault();
     
     try {
-      const response = await axios.post(apiUrl,'/api/users/login', { username, password });
+      const response = await axios.post(apiUrl+'/api/users/login', { username, password });
       localStorage.setItem('token', response.data.token);
       history('/dashboard');
     } catch (error) {
