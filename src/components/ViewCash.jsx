@@ -8,7 +8,7 @@ const ViewCash = () => {
 
   useEffect(() => {
     // Fetch cash records from API
-    axios.get(apiUrl,'/api/cash')
+    axios.get(apiUrl+'/api/cash')
       .then(response => setCash(response.data))
       .catch(error => console.error('Error fetching cash records:', error));
   }, []);

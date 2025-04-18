@@ -8,7 +8,7 @@ const EndDay = () => {
 
   useEffect(() => {
     // Fetch completed orders from API
-    axios.get(apiUrl,'/api/orders/completed')
+    axios.get(apiUrl+'/api/orders/completed')
       .then(response => {
         setCompletedOrders(response.data);
         const totalAmount = response.data.reduce((sum, order) => sum + order.total, 0);
@@ -18,7 +18,7 @@ const EndDay = () => {
   }, []);
 
   const handleEndDay = () => {
-    axios.post(apiUrl,'/api/cash/endday', { orders: completedOrders, total })
+    axios.post(apiUrl+'/api/cash/endday', { orders: completedOrders, total })
       .then(() => console.log('Day ended'))
       .catch(error => console.error('Error ending day:', error));
   };

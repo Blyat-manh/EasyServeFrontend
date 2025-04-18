@@ -10,7 +10,7 @@ const PlaceOrder = () => {
 
   useEffect(() => {
     // Fetch inventory from API
-    axios.get(apiUrl,'/api/inventory')
+    axios.get(apiUrl+'/api/inventory')
       .then(response => setInventory(response.data))
       .catch(error => console.error('Error fetching inventory:', error));
   }, []);
@@ -29,7 +29,7 @@ const PlaceOrder = () => {
       items: order,
       completed: false,
     };
-    axios.post(apiUrl,'/api/orders', orderData)
+    axios.post(apiUrl+'/api/orders', orderData)
       .then(response => console.log('Order placed:', response.data))
       .catch(error => console.error('Error placing order:', error));
   };

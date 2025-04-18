@@ -8,7 +8,7 @@ const ChargeTable = () => {
   const [total, setTotal] = useState(0);
 
   const handleChargeTable = () => {
-    axios.get(apiUrl,`/api/orders/table/${table}`)
+    axios.get(apiUrl+`/api/orders/table/${table}`)
       .then(response => {
         setOrders(response.data);
         const totalAmount = response.data.reduce((sum, order) => sum + order.total, 0);
@@ -18,7 +18,7 @@ const ChargeTable = () => {
   };
 
   const handleMarkAsPaid = () => {
-    axios.post(apiUrl,`/api/orders/charge/${table}`)
+    axios.post(apiUrl+`/api/orders/charge/${table}`)
       .then(() => console.log('Table charged'))
       .catch(error => console.error('Error charging table:', error));
   };

@@ -8,7 +8,7 @@ const InventoryManagement = () => {
 
   useEffect(() => {
     // Fetch inventory from API
-    axios.get(apiUrl,'/api/inventory')
+    axios.get(apiUrl+'/api/inventory')
       .then(response => setInventory(response.data))
       .catch(error => console.error('Error fetching inventory:', error));
   }, []);
@@ -19,7 +19,7 @@ const InventoryManagement = () => {
   };
 
   const handleAddItem = () => {
-    axios.post(apiUrl,'/api/inventory', newItem)
+    axios.post(apiUrl+'/api/inventory', newItem)
       .then(response => setInventory([...inventory, response.data]))
       .catch(error => console.error('Error adding item:', error));
   };
