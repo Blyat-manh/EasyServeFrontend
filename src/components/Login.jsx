@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { apiUrl } from '../App';
@@ -10,15 +10,20 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     try {
-      const response = await axios.post(apiUrl+'/api/users/login', { username, password });
+      const response = await axios.post(apiUrl + '/api/users/login', { username, password });
+
+      // Guardar token y rol en localStorage
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userRole', response.data.role);
+      console.log(response.data.role)
       history('/dashboard');
     } catch (error) {
       console.error('Error logging in:', error);
     }
   };
+
 
   return (
     <form onSubmit={handleLogin}>
