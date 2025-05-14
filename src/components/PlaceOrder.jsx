@@ -9,6 +9,12 @@ const PlaceOrder = () => {
   const [order, setOrder] = useState([]); // Pedido actual
   const [dailyRevenue, setDailyRevenue] = useState(0); // Total ganado del día
 
+//funcion para volver al menu
+  const history = useNavigate();
+  const navigateToDashboard = () => {
+    history('/dashboard');
+  };
+
   // Obtener inventario y mesas desde la API
   useEffect(() => {
     axios.get(apiUrl + '/api/inventory')
@@ -90,6 +96,7 @@ const PlaceOrder = () => {
   return (
     <div>
       <h1>Hacer Pedido</h1>
+      <button onClick={navigateToDashboard}>Volver</button>
 
       {/* Seleccionar mesa */}
       <div>

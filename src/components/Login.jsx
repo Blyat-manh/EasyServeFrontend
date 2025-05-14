@@ -24,6 +24,10 @@ const Login = () => {
     }
   };
 
+//funcion para ir al menu publico
+  const navigateToMenu = () => {
+    history('/menu');
+  };
 
   return (
     <form onSubmit={handleLogin}>
@@ -36,6 +40,7 @@ const Login = () => {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       </div>
       <button type="submit">Login</button>
+      <button onClick={navigateToMenu}>Ver Menu</button>
     </form>
   );
 };

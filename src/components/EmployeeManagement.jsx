@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { apiUrl } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 const EmployeeManagement = () => {
   const [employees, setEmployees] = useState([]);
   const [newEmployee, setNewEmployee] = useState({ name: '', role: '', password: '' });
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [updateEmployee, setUpdateEmployee] = useState({ name: '', role: '', password: '' });
+
+  //funcion para volver al menu
+  const history = useNavigate();
+  const navigateToDashboard = () => {
+    history('/dashboard');
+  };
 
   useEffect(() => {
     // Obtener empleados desde la API
@@ -62,7 +69,7 @@ const EmployeeManagement = () => {
   return (
     <div>
       <h1>Gestión de Empleados</h1>
-
+      <button onClick={navigateToDashboard}>Volver</button>
       {/* Formulario para agregar*/}
       <div>
         <h2>Agregar Empleado</h2>
@@ -73,13 +80,12 @@ const EmployeeManagement = () => {
           value={newEmployee.name}
           onChange={handleInputChange}
         />
-        <input
-          type="text"
-          name="role"
-          placeholder="Rol"
-          value={newEmployee.role}
-          onChange={handleInputChange}
-        />
+        <select name="role" onChange={handleInputChange}>
+          <option value="" >Escoge un rol</option>
+          <option value="encargado">Encargado</option>
+          <option value="camarero">Camarero</option>
+          <option value="cocina">Cocina</option>
+        </select>
         <input
           type="password"
           name="password"
@@ -94,13 +100,12 @@ const EmployeeManagement = () => {
       {selectedEmployee && (
         <div>
           <h2>Actualizar Empleado: {selectedEmployee.name}</h2>
-          <input
-            type="text"
-            name="role"
-            placeholder="Rol"
-            value={updateEmployee.role}
-            onChange={handleUpdateInputChange}
-          />
+          <select name="role" onChange={handleInputChange}>
+          <option value="" >Escoge un rol</option>
+          <option value="encargado">Encargado</option>
+          <option value="camarero">Camarero</option>
+          <option value="cocina">Cocina</option>
+        </select>
           <input
             type="password"
             name="password"
