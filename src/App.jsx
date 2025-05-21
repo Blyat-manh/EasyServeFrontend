@@ -1,10 +1,9 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import EmployeeManagement from './components/EmployeeManagement'
 import InventoryManagement from './components/InventoryManagement'
-import PlaceOrder from './components/PlaceOrder'
+import PlaceOrder from './components/order/PlaceOrder'
 import Menu from './components/Menu'
 
 export const apiUrl ="https://easyservebackend-production.up.railway.app"
