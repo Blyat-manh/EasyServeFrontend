@@ -1,96 +1,102 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { apiUrl } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 const PlaceOrder = () => {
-  const [tables, setTables] = useState([]); // Mesas con órdenes
+  const [tables, setTables] = useState({});
   const [selectedTable, setSelectedTable] = useState('');
-  const [inventory, setInventory] = useState([]); // Inventario de productos
-  const [order, setOrder] = useState([]); // Pedido actual
-  const [dailyRevenue, setDailyRevenue] = useState(0); // Total ganado del día
+  const [inventory, setInventory] = useState([]);
+  const [order, setOrder] = useState([]);
+  const [dailyRevenue, setDailyRevenue] = useState(0);
 
-//funcion para volver al menu
   const history = useNavigate();
   const navigateToDashboard = () => {
     history('/dashboard');
   };
 
-  // Obtener inventario y mesas desde la API
+  // Cargar inventario y pedidos al iniciar
   useEffect(() => {
-    axios.get(apiUrl + '/api/inventory')
-      .then(response => setInventory(response.data))
-      .catch(error => console.error('Error fetching inventory:', error));
+    axios.get(`${apiUrl}/api/inventory`)
+      .then(res => setInventory(res.data))
+      .catch(err => console.error('Error fetching inventory:', err));
 
-    // Obtener las mesas con sus pedidos
-    axios.get(apiUrl + '/api/orders')
-      .then(response => {
-        const ordersByTable = response.data.reduce((acc, order) => {
+    axios.get(`${apiUrl}/api/orders`)
+      .then(res => {
+        const grouped = res.data.reduce((acc, order) => {
           if (!acc[order.table_number]) acc[order.table_number] = [];
           acc[order.table_number].push(order);
           return acc;
         }, {});
-        setTables(ordersByTable);
+        setTables(grouped);
       })
-      .catch(error => console.error('Error fetching orders:', error));
+      .catch(err => console.error('Error fetching orders:', err));
   }, []);
 
-  // Función para agregar un artículo al pedido
+  // Agregar al pedido actual
   const handleAddToOrder = (item) => {
-    setOrder([...order, item]);
+    setOrder(prev => {
+      const found = prev.find(i => i.id === item.id);
+      return found
+        ? prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)
+        : [...prev, { ...item, quantity: 1 }];
+    });
   };
 
-  // Función para eliminar un artículo del pedido
+  // Quitar del pedido actual
   const handleRemoveFromOrder = (item) => {
-    setOrder(order.filter(i => i.id !== item.id));
+    setOrder(prev => {
+      const found = prev.find(i => i.id === item.id);
+      if (!found) return prev;
+      if (found.quantity > 1) {
+        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity - 1 } : i);
+      } else {
+        return prev.filter(i => i.id !== item.id);
+      }
+    });
   };
 
-  // Confirmar el pedido
+  // Calcular total
+  const calculateTotal = (items) =>
+    items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
+
+  // Confirmar pedido y enviarlo
   const handleConfirmOrder = () => {
+    if (!selectedTable || order.length === 0) return alert('Mesa y pedido son requeridos');
+
     const orderData = {
       table_number: selectedTable,
       items: order,
-      total: calculateTotal(order), // Calculamos el total
+      total: calculateTotal(order),
     };
 
-    axios.post(apiUrl + '/api/orders', orderData)
-      .then(response => {
-        console.log('Order placed:', response.data);
-        setTables(prevTables => ({
-          ...prevTables,
-          [selectedTable]: [...(prevTables[selectedTable] || []), response.data],
+    axios.post(`${apiUrl}/api/orders`, orderData)
+      .then(res => {
+        setTables(prev => ({
+          ...prev,
+          [selectedTable]: [...(prev[selectedTable] || []), res.data],
         }));
-        setOrder([]); // Limpiar el pedido actual
+        setOrder([]);
       })
-      .catch(error => console.error('Error placing order:', error));
+      .catch(err => console.error('Error placing order:', err));
   };
 
-  // Función para calcular el total del pedido
-  const calculateTotal = (items) => {
-    return items.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
-  };
-
-  // Función para confirmar el cobro
+  // Marcar mesa como pagada
   const handleMarkAsPaid = (tableNumber) => {
-    const ordersToPay = tables[tableNumber] || [];
-    const totalForTable = ordersToPay.reduce((total, order) => total + parseFloat(order.total), 0);
+    const orders = tables[tableNumber] || [];
+    const total = orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
 
-    // Sumar el total ganado en el día
-    axios.post(apiUrl + '/api/daily_revenue', { total: totalForTable })
+    axios.post(`${apiUrl}/api/daily_revenue`, { total })
+      .catch(err => console.warn('Warning: revenue endpoint not found (optional)', err));
+
+    axios.delete(`${apiUrl}/api/orders/${tableNumber}`)
       .then(() => {
-        setDailyRevenue(prevRevenue => prevRevenue + totalForTable); // Actualizar el total del día
-        // Borrar las órdenes para la mesa una vez cobrado
-        axios.delete(apiUrl + `/api/orders/${tableNumber}`)
-          .then(() => {
-            setTables(prevTables => {
-              const newTables = { ...prevTables };
-              delete newTables[tableNumber]; // Eliminar la mesa
-              return newTables;
-            });
-            console.log('Mesa cobrada y órdenes eliminadas.');
-          })
-          .catch(error => console.error('Error deleting orders for table:', error));
+        const updated = { ...tables };
+        delete updated[tableNumber];
+        setTables(updated);
+        setDailyRevenue(prev => prev + total);
       })
-      .catch(error => console.error('Error updating daily revenue:', error));
+      .catch(err => console.error('Error deleting orders for table:', err));
   };
 
   return (
@@ -98,7 +104,7 @@ const PlaceOrder = () => {
       <h1>Hacer Pedido</h1>
       <button onClick={navigateToDashboard}>Volver</button>
 
-      {/* Seleccionar mesa */}
+      {/* Selección de mesa */}
       <div>
         <label>Mesa:</label>
         <input
@@ -108,59 +114,60 @@ const PlaceOrder = () => {
         />
       </div>
 
-      {/* Mostrar inventario */}
+      {/* Inventario disponible */}
       <div>
         <h2>Inventario</h2>
         <ul>
           {inventory.map(item => (
             <li key={item.id}>
               {item.name} - {item.quantity}
-              <button onClick={() => handleAddToOrder({ ...item, quantity: 1 })}>Agregar</button>
-              <button onClick={() => handleRemoveFromOrder(item)}>Quitar</button>
+              <button onClick={() => handleAddToOrder(item)}>Agregar</button>
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Confirmar pedido */}
-      <button onClick={handleConfirmOrder}>Confirmar Pedido</button>
-
-      {/* Mostrar pedido actual */}
+      {/* Pedido actual */}
       <div>
         <h2>Pedido Actual</h2>
         <ul>
           {order.map((item, index) => (
-            <li key={index}>{item.name} - {item.quantity}</li>
+            <li key={index}>
+              {item.name} - {item.quantity} x ${item.price} = ${(item.price * item.quantity).toFixed(2)}
+              <button onClick={() => handleRemoveFromOrder(item)}>Quitar</button>
+            </li>
           ))}
         </ul>
+        <p><strong>Total:</strong> ${calculateTotal(order)}</p>
+        <button onClick={handleConfirmOrder}>Confirmar Pedido</button>
       </div>
 
-      {/* Mostrar mesas con sus pedidos */}
+      {/* Pedidos por mesa */}
       <div>
         <h2>Pedidos por Mesa</h2>
-        {Object.keys(tables).map((tableNumber) => (
-          <div key={tableNumber}>
-            <h3>Mesa {tableNumber}</h3>
+        {Object.keys(tables).map(table => (
+          <div key={table}>
+            <h3>Mesa {table}</h3>
             <ul>
-              {tables[tableNumber].map(order => (
+              {tables[table].map(order => (
                 <li key={order.id}>
-                  {order.items.map((item, index) => (
-                    <div key={index}>
+                  {order.items.map((item, idx) => (
+                    <div key={idx}>
                       {item.name} - {item.quantity}
                     </div>
                   ))}
-                  <p>Total: {order.total}</p>
-                  <button onClick={() => handleMarkAsPaid(tableNumber)}>Cobrar</button>
+                  <p>Total: ${order.total}</p>
                 </li>
               ))}
             </ul>
+            <button onClick={() => handleMarkAsPaid(table)}>Cobrar Mesa {table}</button>
           </div>
         ))}
       </div>
 
-      {/* Mostrar ganancias del día */}
+      {/* Ganancias del día */}
       <div>
-        <h2>Ganancias del Día: {dailyRevenue}</h2>
+        <h2>Ganancias del Día: ${dailyRevenue.toFixed(2)}</h2>
       </div>
     </div>
   );
