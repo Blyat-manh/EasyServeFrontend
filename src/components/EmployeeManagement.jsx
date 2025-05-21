@@ -8,12 +8,7 @@ const EmployeeManagement = () => {
   const [newEmployee, setNewEmployee] = useState({ name: '', role: '', password: '' });
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [updateEmployee, setUpdateEmployee] = useState({ name: '', role: '', password: '' });
-
-  //funcion para volver al menu
-  const history = useNavigate();
-  const navigateToDashboard = () => {
-    history('/dashboard');
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Obtener empleados desde la API
@@ -69,7 +64,7 @@ const EmployeeManagement = () => {
   return (
     <div>
       <h1>Gestión de Empleados</h1>
-      <button onClick={navigateToDashboard}>Volver</button>
+      <button onClick={()=>navigate('/dashboard')}>Volver</button>
       {/* Formulario para agregar*/}
       <div>
         <h2>Agregar Empleado</h2>

@@ -5,6 +5,8 @@ import EmployeeManagement from './components/EmployeeManagement'
 import InventoryManagement from './components/InventoryManagement'
 import PlaceOrder from './components/order/PlaceOrder'
 import Menu from './components/Menu'
+import OrderHistoryViewer from "./components/order/OrderHistoryViewer"
+import DailyRevenue from './components/DailyRevenue';
 
 export const apiUrl ="https://easyservebackend-production.up.railway.app"
 
@@ -18,6 +20,8 @@ function App() {
         <Route path="/inventory-management" element={<InventoryManagement />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/menu" element={<Menu />} />
+        <Route path="/historial-pedidos" element={<OrderHistoryViewer />} />
+        <Route path="/historial-pedidos" element={<DailyRevenue />} />
       </Routes>
 
     </Router>

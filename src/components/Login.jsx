@@ -13,7 +13,6 @@ const Login = () => {
 
     try {
       const response = await axios.post(apiUrl + '/api/users/login', { username, password });
-
       // Guardar token y rol en localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userRole', response.data.role);

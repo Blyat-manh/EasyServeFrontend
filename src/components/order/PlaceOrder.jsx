@@ -20,16 +20,19 @@ const PlaceOrder = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`${apiUrl}/api/discounts`)
-      .then(res => setDiscountRates(res.data))
-      .catch(err => console.error("Error al cargar descuentos:", err));
+    axios
+      .get(`${apiUrl}/api/discounts`)
+      .then((res) => setDiscountRates(res.data))
+      .catch((err) => console.error("Error al cargar descuentos:", err));
 
-    axios.get(`${apiUrl}/api/inventory`)
-      .then(res => setInventory(res.data))
-      .catch(err => console.error("Error cargando inventario:", err));
+    axios
+      .get(`${apiUrl}/api/inventory`)
+      .then((res) => setInventory(res.data))
+      .catch((err) => console.error("Error cargando inventario:", err));
 
-    axios.get(`${apiUrl}/api/orders`)
-      .then(res => {
+    axios
+      .get(`${apiUrl}/api/orders`)
+      .then((res) => {
         const grouped = res.data.reduce((acc, order) => {
           const table = order.table_number;
           if (!acc[table]) acc[table] = [];
@@ -38,7 +41,7 @@ const PlaceOrder = () => {
         }, {});
         setTables(grouped);
       })
-      .catch(err => console.error("Error cargando pedidos:", err));
+      .catch((err) => console.error("Error cargando pedidos:", err));
   }, []);
 
   const applyDiscount = (subtotal) => {
@@ -57,21 +60,25 @@ const PlaceOrder = () => {
 
   const handleAddToOrder = (item) => {
     setOrder((prev) => {
-      const existing = prev.find(i => i.id === item.id);
+      const existing = prev.find((i) => i.id === item.id);
       return existing
-        ? prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)
+        ? prev.map((i) =>
+            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          )
         : [...prev, { ...item, quantity: 1 }];
     });
   };
 
   const handleRemoveFromOrder = (item) => {
     setOrder((prev) => {
-      const existing = prev.find(i => i.id === item.id);
+      const existing = prev.find((i) => i.id === item.id);
       if (!existing) return prev;
       if (existing.quantity > 1) {
-        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity - 1 } : i);
+        return prev.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity - 1 } : i
+        );
       } else {
-        return prev.filter(i => i.id !== item.id);
+        return prev.filter((i) => i.id !== item.id);
       }
     });
   };
@@ -81,16 +88,23 @@ const PlaceOrder = () => {
       return alert("Mesa y pedido requeridos");
     }
 
-    const subtotal = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const subtotal = order.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
     const { total } = applyDiscount(subtotal);
 
     const newOrder = {
       table_number: selectedTable,
-      items: order,
-      total,
+      items: order.map((item) => ({
+        inventory_id: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      })),
     };
 
-    axios.post(`${apiUrl}/api/orders`, newOrder)
+    axios
+      .post(`${apiUrl}/api/orders`, newOrder)
       .then((res) => {
         setTables((prev) => ({
           ...prev,
@@ -104,26 +118,37 @@ const PlaceOrder = () => {
   const handleDeleteOrder = (orderId, tableNumber) => {
     if (!window.confirm("¿Estás seguro de eliminar este pedido?")) return;
 
-    axios.delete(`${apiUrl}/api/orders/${orderId}`)
+    axios
+      .delete(`${apiUrl}/api/orders/${orderId}`)
       .then(() => {
         const updated = { ...tables };
-        updated[tableNumber] = updated[tableNumber].filter(o => o.id !== orderId);
-        if (updated[tableNumber].length === 0) delete updated[tableNumber];
+        updated[tableNumber] = updated[tableNumber].filter(
+          (o) => o.order_id !== orderId
+        );
+        if (updated[tableNumber].length === 0) {
+          delete updated[tableNumber];
+        }
         setTables(updated);
       })
-      .catch(err => console.error("Error eliminando pedido:", err));
+      .catch((err) => console.error("Error eliminando pedido:", err));
   };
 
   const handleMarkAsPaid = (tableNumber) => {
-    const orders = tables[tableNumber] || [];
-    Promise.all(orders.map(order => axios.post(`${apiUrl}/api/orders/charge/${order.id}`)))
-      .then(() => {
-        const updated = { ...tables };
-        delete updated[tableNumber];
-        setTables(updated);
-      })
-      .catch(err => console.error("Error cobrando mesa:", err));
-  };
+  const orders = tables[tableNumber] || [];
+  Promise.all(
+    orders.map(order =>
+      axios.post(`${apiUrl}/api/orders/charge/${order.id}`)
+    )
+  )
+  .then(() => {
+    const updated = { ...tables };
+    delete updated[tableNumber];
+    setTables(updated);
+  })
+  .catch(err => console.error("Error cobrando mesa:", err));
+};
+
+
 
   const handleEditOrder = (order, table) => {
     setEditingOrder({ ...order });
@@ -143,30 +168,30 @@ const PlaceOrder = () => {
   };
 
   const handleSaveEdit = () => {
-  const subtotal = editingOrder.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const { total } = applyDiscount(subtotal);
+    const subtotal = editingOrder.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const { total } = applyDiscount(subtotal);
 
-  const updatedOrder = {
-    ...editingOrder,
-    total,
+    const updatedOrder = {
+      ...editingOrder,
+      total,
+    };
+
+    axios
+      .put(`${apiUrl}/api/orders/${editingOrder.id}`, updatedOrder)
+      .then((res) => {
+        const updated = { ...tables };
+        updated[editingTable] = updated[editingTable].map((o) =>
+          o.id === res.data.id ? res.data : o
+        );
+        setTables(updated);
+        setEditingOrder(null);
+        setEditingTable(null);
+      })
+      .catch((err) => console.error("Error actualizando pedido:", err));
   };
-
-  axios.put(`${apiUrl}/api/orders/${editingOrder.id}`, updatedOrder)
-    .then((res) => {
-      const updated = { ...tables };
-      updated[editingTable] = updated[editingTable].map((o) =>
-        o.id === res.data.id ? res.data : o
-      );
-      setTables(updated);
-      setEditingOrder(null);
-      setEditingTable(null);
-    })
-    .catch((err) => console.error("Error actualizando pedido:", err));
-};
-
 
   return (
     <div>
