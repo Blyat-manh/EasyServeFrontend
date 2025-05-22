@@ -24,8 +24,8 @@ const RecoverPassword = () => {
         try {
             await axios.post(`${apiUrl}/api/users/recover-password`, {
                 username,
-                security_answer: securityAnswer,
-                new_password: newPassword
+                securityAnswer,
+                newPassword
             });
 
             alert("Contraseña actualizada correctamente. Ahora puedes iniciar sesión.");
