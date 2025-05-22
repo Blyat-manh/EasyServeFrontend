@@ -2,45 +2,91 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { apiUrl } from '../App';
+import '../styles/login.scss';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const history = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(apiUrl + '/api/users/login', { username, password });
-      // Guardar token y rol en localStorage
+      const response = await axios.post(`${apiUrl}/api/users/login`, { username, password });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userRole', response.data.role);
-      console.log(response.data.role)
-      history('/dashboard');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error logging in:', error);
     }
   };
 
-//funcion para ir al menu publico
   const navigateToMenu = () => {
-    history('/menu');
+    navigate('/menu');
+  };
+
+  const navigateToRecovery = () => {
+    navigate('/recover-password');
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>Username:</label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-      </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-      </div>
-      <button type="submit">Login</button>
-      <button onClick={navigateToMenu}>Ver Menu</button>
-    </form>
+    <div className="form-wrapper">
+      <form onSubmit={handleLogin} className="login-form">
+        <div className="segment">
+          <h2>Iniciar Sesión</h2>
+        </div>
+
+        <div>
+          <label htmlFor="username">Usuario:</label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            className="input"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password">Contraseña:</label>
+          <div className="password-input">
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="input"
+            />
+            <button
+              type="button"
+              onMouseDown={() => setShowPassword(true)}
+              onMouseUp={() => setShowPassword(false)}
+              onMouseLeave={() => setShowPassword(false)}
+              className="eye-btn"
+            >
+              👁
+            </button>
+          </div>
+        </div>
+
+        <div className="segment">
+          <button type="submit" className="button">
+            Login
+          </button>
+          <button type="button" onClick={navigateToMenu} className="button red">
+            Ver Menú
+          </button>
+          <button type="button" onClick={navigateToRecovery} className="button gray">
+            ¿Olvidaste tu contraseña?
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

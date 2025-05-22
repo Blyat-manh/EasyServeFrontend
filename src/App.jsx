@@ -7,6 +7,8 @@ import PlaceOrder from './components/order/PlaceOrder'
 import Menu from './components/Menu'
 import OrderHistoryViewer from "./components/order/OrderHistoryViewer"
 import DailyRevenue from './components/DailyRevenue';
+import TablesManager from './components/tablesManager';
+import PasswordManagement from './components/RecoverPassword'
 
 export const apiUrl ="https://easyservebackend-production.up.railway.app"
 
@@ -22,6 +24,8 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/historial-pedidos" element={<OrderHistoryViewer />} />
         <Route path="/Hacer-caja" element={<DailyRevenue />} />
+        <Route path="/table-management" element={<TablesManager />} />
+        <Route path="/recover-password" element={<PasswordManagement />} />
       </Routes>
 
     </Router>

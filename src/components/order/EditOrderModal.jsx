@@ -1,3 +1,5 @@
+import '../../styles/editOrderModal.scss'
+
 const EditOrderModal = ({ order, table, onChange, onSave, onCancel }) => {
   return (
     <div style={{ border: "1px solid gray", padding: "10px", marginTop: "20px" }}>

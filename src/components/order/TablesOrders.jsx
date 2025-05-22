@@ -1,3 +1,5 @@
+import '../../styles/tablesOrders.scss'
+
 const TablesOrders = ({ tables, onDelete, onEdit, onCharge }) => (
   <div>
     <h2>Pedidos por Mesa</h2>

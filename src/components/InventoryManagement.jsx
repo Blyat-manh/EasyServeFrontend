@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { apiUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
+import '../styles/inventoryManagement.scss';
+
 
 const InventoryManagement = () => {
   const [inventory, setInventory] = useState([]);
@@ -97,12 +99,12 @@ const InventoryManagement = () => {
   };
 
   return (
-    <div>
+    <div className="inventory-management-container">
       <h1>Gestión de Inventario</h1>
       <button onClick={navigateToDashboard}>Volver</button>
 
       {/* Formulario para agregar un artículo */}
-      <div>
+      <div className="form-section">
         <input
           type="text"
           name="name"
@@ -127,7 +129,7 @@ const InventoryManagement = () => {
 
       {/* Formulario para actualizar un artículo */}
       {selectedItem && (
-        <div>
+        <div className="form-section">
           <h2>Actualizar Artículo: {selectedItem.name}</h2>
           <input
             type="text"

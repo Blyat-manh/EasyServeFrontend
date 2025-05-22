@@ -2,16 +2,20 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { apiUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
+import '../styles/employeeManagement.scss';
 
 const EmployeeManagement = () => {
   const [employees, setEmployees] = useState([]);
-  const [newEmployee, setNewEmployee] = useState({ name: '', role: '', password: '' });
+  const [newEmployee, setNewEmployee] = useState({ name: '', role: '', password: '', confirmPassword: '' });
+  const [showPassword, setShowPassword] = useState(false);
+
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [updateEmployee, setUpdateEmployee] = useState({ name: '', role: '', password: '' });
+  const [showUpdatePassword, setShowUpdatePassword] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Obtener empleados desde la API
     axios.get(`${apiUrl}/api/employees`)
       .then(response => setEmployees(response.data))
       .catch(error => console.error('Error fetching employees:', error));
@@ -23,10 +27,17 @@ const EmployeeManagement = () => {
   };
 
   const handleAddEmployee = () => {
-    axios.post(`${apiUrl}/api/employees`, newEmployee)
+    if (newEmployee.password !== newEmployee.confirmPassword) {
+      alert("Las contraseñas no coinciden");
+      return;
+    }
+
+    const { name, role, password } = newEmployee;
+
+    axios.post(`${apiUrl}/api/employees`, { name, role, password })
       .then(response => {
         setEmployees(prevEmployees => [...prevEmployees, response.data]);
-        setNewEmployee({ name: '', role: '', password: '' }); // Limpiar campos
+        setNewEmployee({ name: '', role: '', password: '', confirmPassword: '' });
       })
       .catch(error => console.error('Error adding employee:', error));
   };
@@ -39,11 +50,13 @@ const EmployeeManagement = () => {
   const handleUpdateEmployee = () => {
     axios.put(`${apiUrl}/api/employees/${updateEmployee.name}`, updateEmployee)
       .then(response => {
-        setEmployees(prevEmployees => prevEmployees.map(employee =>
-          employee.name === updateEmployee.name ? response.data : employee
-        ));
+        setEmployees(prevEmployees =>
+          prevEmployees.map(employee =>
+            employee.name === updateEmployee.name ? response.data : employee
+          )
+        );
         setUpdateEmployee({ name: '', role: '', password: '' });
-        setSelectedEmployee(null); // Limpiar el empleado seleccionado
+        setSelectedEmployee(null);
       })
       .catch(error => console.error('Error updating employee:', error));
   };
@@ -62,11 +75,12 @@ const EmployeeManagement = () => {
   };
 
   return (
-    <div>
+    <div className="employee-management-container">
       <h1>Gestión de Empleados</h1>
-      <button onClick={()=>navigate('/dashboard')}>Volver</button>
-      {/* Formulario para agregar*/}
-      <div>
+      <button onClick={() => navigate('/dashboard')}>Volver</button>
+
+      {/* Formulario para agregar */}
+      <div className="form-section">
         <h2>Agregar Empleado</h2>
         <input
           type="text"
@@ -75,44 +89,75 @@ const EmployeeManagement = () => {
           value={newEmployee.name}
           onChange={handleInputChange}
         />
-        <select name="role" onChange={handleInputChange}>
-          <option value="" >Escoge un rol</option>
+        <select name="role" value={newEmployee.role} onChange={handleInputChange}>
+          <option value="">Escoge un rol</option>
           <option value="encargado">Encargado</option>
           <option value="camarero">Camarero</option>
           <option value="cocina">Cocina</option>
         </select>
+        <div className="password-input">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Contraseña"
+            value={newEmployee.password}
+            onChange={handleInputChange}
+          />
+          <button
+            type="button"
+            onMouseDown={() => setShowPassword(true)}
+            onMouseUp={() => setShowPassword(false)}
+            onMouseLeave={() => setShowPassword(false)}
+          >
+            👁
+          </button>
+        </div>
         <input
-          type="password"
-          name="password"
-          placeholder="Contraseña"
-          value={newEmployee.password}
+          type={showPassword ? "text" : "password"}
+          name="confirmPassword"
+          placeholder="Confirmar Contraseña"
+          value={newEmployee.confirmPassword}
           onChange={handleInputChange}
         />
         <button onClick={handleAddEmployee}>Agregar Empleado</button>
       </div>
 
-      {/* Formulario para actualizar*/}
+      {/* Formulario para actualizar */}
       {selectedEmployee && (
-        <div>
+        <div className="form-section">
           <h2>Actualizar Empleado: {selectedEmployee.name}</h2>
-          <select name="role" onChange={handleInputChange}>
-          <option value="" >Escoge un rol</option>
-          <option value="encargado">Encargado</option>
-          <option value="camarero">Camarero</option>
-          <option value="cocina">Cocina</option>
-        </select>
-          <input
-            type="password"
-            name="password"
-            placeholder="Nueva Contraseña"
-            value={updateEmployee.password}
+          <select
+            name="role"
+            value={updateEmployee.role}
             onChange={handleUpdateInputChange}
-          />
+          >
+            <option value="">Escoge un rol</option>
+            <option value="encargado">Encargado</option>
+            <option value="camarero">Camarero</option>
+            <option value="cocina">Cocina</option>
+          </select>
+          <div className="password-input">
+            <input
+              type={showUpdatePassword ? "text" : "password"}
+              name="password"
+              placeholder="Nueva Contraseña"
+              value={updateEmployee.password}
+              onChange={handleUpdateInputChange}
+            />
+            <button
+              type="button"
+              onMouseDown={() => setShowUpdatePassword(true)}
+              onMouseUp={() => setShowUpdatePassword(false)}
+              onMouseLeave={() => setShowUpdatePassword(false)}
+            >
+              👁
+            </button>
+          </div>
           <button onClick={handleUpdateEmployee}>Actualizar Empleado</button>
         </div>
       )}
 
-      {/* Lista empleados/usuarios */}
+      {/* Lista empleados */}
       <ul>
         {employees.map(employee => (
           <li key={employee.name}>

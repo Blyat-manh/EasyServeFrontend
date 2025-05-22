@@ -1,3 +1,5 @@
+import '../../styles/orderSummary.scss';
+
 const OrderSummary = ({ order, applyDiscount, onRemove, onConfirm }) => {
   if (order.length === 0) return null;
 

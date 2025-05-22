@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { apiUrl } from "../../App";
 import { useNavigate } from "react-router-dom";
-
+import '../../styles/placeorder.scss';
 import OrderForm from "./OrderForm";
 import OrderSummary from "./OrderSummary";
 import TablesOrders from "./TablesOrders";
@@ -194,7 +194,7 @@ const PlaceOrder = () => {
   };
 
   return (
-    <div>
+    <div className="place-order-container">
       <h1>Hacer Pedido</h1>
       <button onClick={() => navigate("/dashboard")}>Volver</button>
 

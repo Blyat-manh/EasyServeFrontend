@@ -1,3 +1,6 @@
+import '../../styles/orderForm.scss';
+
+
 const OrderForm = ({ inventory, onAddToOrder, selectedTable, setSelectedTable }) => {
   return (
     <div>
