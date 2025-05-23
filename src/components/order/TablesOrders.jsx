@@ -7,20 +7,18 @@ const TablesOrders = ({ tables, onDelete, onEdit, onCharge }) => (
       <div key={table}>
         <h3>Mesa {table}</h3>
         <ul>
-          {tables[table].map((order) => (
-            <li key={order.order_id}>
+          {tables[table].map((order, orderIdx) => (
+            <li key={order.order_id || `order-${table}-${orderIdx}`}>
               {order.items.map((item, idx) => (
                 <div
-                  key={`${item.id || item.inventory_id || item.name}-${idx}`}
+                  key={item.id || item.inventory_id || `${item.name}-${idx}`}
                 >
                   {item.name} - {item.quantity}
                 </div>
               ))}
 
               <p>Total: ${order.total}</p>
-              <button onClick={() => onDelete(order.order_id, table)}>
-                Eliminar
-              </button>
+              <button onClick={() => onDelete(order.order_id, table)}>Eliminar</button>
               <button onClick={() => onEdit(order, table)}>Editar</button>
             </li>
           ))}
@@ -28,6 +26,7 @@ const TablesOrders = ({ tables, onDelete, onEdit, onCharge }) => (
         <button onClick={() => onCharge(table)}>Cobrar</button>
       </div>
     ))}
+
   </div>
 );
 

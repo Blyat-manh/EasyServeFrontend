@@ -9,6 +9,7 @@ import OrderHistoryViewer from "./components/order/OrderHistoryViewer"
 import DailyRevenue from './components/DailyRevenue';
 import TablesManager from './components/tablesManager';
 import PasswordManagement from './components/RecoverPassword'
+import ProfileUpdate from './components/ProfileUpdate';
 
 export const apiUrl ="https://easyservebackend-production.up.railway.app"
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/Hacer-caja" element={<DailyRevenue />} />
         <Route path="/table-management" element={<TablesManager />} />
         <Route path="/recover-password" element={<PasswordManagement />} />
+        <Route path="/profileUpdate" element={<ProfileUpdate />} />
       </Routes>
 
     </Router>

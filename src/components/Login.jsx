@@ -18,6 +18,7 @@ const Login = () => {
       const response = await axios.post(`${apiUrl}/api/users/login`, { username, password });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userRole', response.data.role);
+      localStorage.setItem("user_id", response.data.user_id);
       navigate('/dashboard');
     } catch (error) {
       console.error('Error logging in:', error);
@@ -39,53 +40,53 @@ const Login = () => {
           <h2>Iniciar Sesión</h2>
         </div>
 
-        <div>
-          <label htmlFor="username">Usuario:</label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            className="input"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password">Contraseña:</label>
-          <div className="password-input">
+        <div className="login-box">
+          <div>
+            <label htmlFor="username">Usuario:</label>
             <input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
               className="input"
             />
-            <button
-              type="button"
-              onMouseDown={() => setShowPassword(true)}
-              onMouseUp={() => setShowPassword(false)}
-              onMouseLeave={() => setShowPassword(false)}
-              className="eye-btn"
-            >
-              👁
-            </button>
+          </div>
+
+          <div>
+            <label htmlFor="password">Contraseña:</label>
+            <div className="password-input">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="input"
+              />
+              <button
+                type="button"
+                onMouseDown={() => setShowPassword(true)}
+                onMouseUp={() => setShowPassword(false)}
+                onMouseLeave={() => setShowPassword(false)}
+                className="eye-btn"
+              >
+                👁
+              </button>
+            </div>
+          </div>
+
+          <div className="segment">
+            <button type="submit" className="button">Login</button>
+            <button type="button" onClick={navigateToRecovery} className="button gray">¿Olvidaste tu contraseña?</button>
           </div>
         </div>
 
         <div className="segment">
-          <button type="submit" className="button">
-            Login
-          </button>
-          <button type="button" onClick={navigateToMenu} className="button red">
-            Ver Menú
-          </button>
-          <button type="button" onClick={navigateToRecovery} className="button gray">
-            ¿Olvidaste tu contraseña?
-          </button>
+          <button type="button" onClick={navigateToMenu} className="button red">Ver Menú</button>
         </div>
       </form>
+
     </div>
   );
 };

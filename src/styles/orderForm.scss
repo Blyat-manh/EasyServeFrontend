@@ -10,13 +10,27 @@
   margin-bottom: $ruler;
 
   select, input {
-    width: 100%;
-    padding: $ruler / 1.2;
-    margin: 0.5rem 0;
-    border: none;
-    border-radius: $ruler;
-    box-shadow: inset 2px 2px 5px $color-shadow, inset -5px -5px 10px $color-white;
-    color: $color-text;
-    font-size: 1rem;
+  background-color: #EBECF0;
+  color: #BABECC;
+  border: none;
+  border-radius: 12px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  margin: 0 0.5rem;
+  box-shadow: inset 2px 2px 5px #BABECC, inset -2px -2px 5px #FFF;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+
+  &:focus {
+    box-shadow: inset 1px 1px 3px #BABECC, inset -1px -1px 3px #FFF;
+    outline: none;
   }
+
+  select:focus, input:focus {
+    outline: none;
+    box-shadow: inset 1px 1px 2px $color-shadow, inset -1px -1px 2px $color-white;
+  }
+}
 }

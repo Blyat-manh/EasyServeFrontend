@@ -23,13 +23,14 @@ const RecoverPassword = () => {
 
         try {
             await axios.post(`${apiUrl}/api/users/recover-password`, {
-                username,
-                securityAnswer,
-                newPassword
+                name: username,
+                security_answer: securityAnswer,
+                new_password: newPassword
             });
 
+
             alert("Contraseña actualizada correctamente. Ahora puedes iniciar sesión.");
-            navigate('/login');
+            navigate('/');
         } catch (error) {
             console.error("Error al recuperar contraseña:", error);
             alert("No se pudo recuperar la contraseña. Verifica los datos ingresados.");

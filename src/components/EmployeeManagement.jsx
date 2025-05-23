@@ -3,14 +3,20 @@ import axios from 'axios';
 import { apiUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
 import '../styles/employeeManagement.scss';
+import { FiHome } from 'react-icons/fi';
+
 
 const EmployeeManagement = () => {
   const [employees, setEmployees] = useState([]);
-  const [newEmployee, setNewEmployee] = useState({ name: '', role: '', password: '', confirmPassword: '' });
+  const [newEmployee, setNewEmployee] = useState({
+    name: '', role: '', password: '', confirmPassword: '', securityAnswer: ''
+  });
   const [showPassword, setShowPassword] = useState(false);
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [updateEmployee, setUpdateEmployee] = useState({ name: '', role: '', password: '' });
+  const [updateEmployee, setUpdateEmployee] = useState({
+    name: '', role: '', password: '', securityAnswer: ''
+  });
   const [showUpdatePassword, setShowUpdatePassword] = useState(false);
 
   const navigate = useNavigate();
@@ -32,12 +38,12 @@ const EmployeeManagement = () => {
       return;
     }
 
-    const { name, role, password } = newEmployee;
+    const { name, role, password, securityAnswer } = newEmployee;
 
-    axios.post(`${apiUrl}/api/employees`, { name, role, password })
+    axios.post(`${apiUrl}/api/employees`, { name, role, password, securityAnswer })
       .then(response => {
         setEmployees(prevEmployees => [...prevEmployees, response.data]);
-        setNewEmployee({ name: '', role: '', password: '', confirmPassword: '' });
+        setNewEmployee({ name: '', role: '', password: '', confirmPassword: '', securityAnswer: '' });
       })
       .catch(error => console.error('Error adding employee:', error));
   };
@@ -55,7 +61,7 @@ const EmployeeManagement = () => {
             employee.name === updateEmployee.name ? response.data : employee
           )
         );
-        setUpdateEmployee({ name: '', role: '', password: '' });
+        setUpdateEmployee({ name: '', role: '', password: '', securityAnswer: '' });
         setSelectedEmployee(null);
       })
       .catch(error => console.error('Error updating employee:', error));
@@ -71,13 +77,29 @@ const EmployeeManagement = () => {
 
   const handleSelectEmployee = (employee) => {
     setSelectedEmployee(employee);
-    setUpdateEmployee({ name: employee.name, role: employee.role, password: '' });
+    setUpdateEmployee({
+      name: employee.name,
+      role: employee.role,
+      password: '',
+      securityAnswer: employee.securityAnswer || ''
+    });
   };
+  const handleCancelUpdate = () => {
+    setSelectedEmployee(null);
+    setUpdateEmployee({ name: '', role: '', password: '', securityAnswer: '' });
+  };
+
 
   return (
     <div className="employee-management-container">
-      <h1>Gestión de Empleados</h1>
-      <button onClick={() => navigate('/dashboard')}>Volver</button>
+      <header className="header">
+        <h1>Gestión de Empleados</h1>
+        <button className="home-btn" onClick={() => navigate('/dashboard')}>
+          <FiHome />
+        </button>
+      </header>
+
+
 
       {/* Formulario para agregar */}
       <div className="form-section">
@@ -87,6 +109,13 @@ const EmployeeManagement = () => {
           name="name"
           placeholder="Nombre"
           value={newEmployee.name}
+          onChange={handleInputChange}
+        />
+        <input
+          type="text"
+          name="securityAnswer"
+          placeholder="Nombre de su primera mascota"
+          value={newEmployee.securityAnswer}
           onChange={handleInputChange}
         />
         <select name="role" value={newEmployee.role} onChange={handleInputChange}>
@@ -136,6 +165,13 @@ const EmployeeManagement = () => {
             <option value="camarero">Camarero</option>
             <option value="cocina">Cocina</option>
           </select>
+          <input
+            type="text"
+            name="securityAnswer"
+            placeholder="Nombre de su primera mascota"
+            value={updateEmployee.securityAnswer}
+            onChange={handleUpdateInputChange}
+          />
           <div className="password-input">
             <input
               type={showUpdatePassword ? "text" : "password"}
@@ -154,8 +190,10 @@ const EmployeeManagement = () => {
             </button>
           </div>
           <button onClick={handleUpdateEmployee}>Actualizar Empleado</button>
+          <button onClick={handleCancelUpdate}>Cancelar</button>
         </div>
       )}
+
 
       {/* Lista empleados */}
       <ul>

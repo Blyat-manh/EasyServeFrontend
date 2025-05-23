@@ -3,6 +3,7 @@ import axios from 'axios';
 import { apiUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
 import '../styles/inventoryManagement.scss';
+import { FiHome } from 'react-icons/fi';
 
 
 const InventoryManagement = () => {
@@ -12,10 +13,7 @@ const InventoryManagement = () => {
   const [updateItem, setUpdateItem] = useState({ name: '', price: '', type: '' });
 
   // Función para volver al menú
-  const history = useNavigate();
-  const navigateToDashboard = () => {
-    history('/dashboard');
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Obtener inventario desde la API
@@ -101,7 +99,9 @@ const InventoryManagement = () => {
   return (
     <div className="inventory-management-container">
       <h1>Gestión de Inventario</h1>
-      <button onClick={navigateToDashboard}>Volver</button>
+      <button  onClick={() => navigate('/dashboard')}>
+          <FiHome />
+        </button>
 
       {/* Formulario para agregar un artículo */}
       <div className="form-section">

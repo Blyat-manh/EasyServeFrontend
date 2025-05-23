@@ -3,6 +3,9 @@ import axios from "axios";
 import '../styles/tablesManager.scss';
 import { apiUrl } from "../App";
 import { useNavigate } from "react-router-dom";
+import TablesMap from "./TablesMap"; // ajusta la ruta según tu estructura
+import { FiHome } from "react-icons/fi";
+
 
 const TablesManager = () => {
   const navigate = useNavigate();
@@ -82,7 +85,9 @@ const TablesManager = () => {
   return (
     <div className="tables-manager">
       <h2>Gestión de Mesas</h2>
-      <button onClick={()=> navigate('/dashboard')}>Salir</button>
+      <button className="home-btn" onClick={() => navigate('/dashboard')}>
+          <FiHome />
+        </button>
       <div className="create-table">
         <input
           type="number"
@@ -143,6 +148,7 @@ const TablesManager = () => {
           ))}
         </tbody>
       </table>
+      <TablesMap />
     </div>
   );
 };

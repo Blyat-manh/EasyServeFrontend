@@ -11,18 +11,13 @@ const Dashboard = () => {
     setUserRole(role);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userRole");
-    navigate("/");
-  };
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-box">
         <h1>Dashboard</h1>
 
-        <button onClick={handleLogout}>Logout</button>
+        <button onClick={() => navigate('/profileUpdate')}>Mi Perfil</button>
 
         {userRole === "encargado" && (
           <>
