@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
@@ -14,11 +15,18 @@ import ProfileUpdate from './components/ProfileUpdate';
 export const apiUrl ="https://easyservebackend-production.up.railway.app"
 
 function App() {
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    document.body.classList.remove("light-theme", "dark-theme");
+    document.body.classList.add(`${theme}-theme`);
+  }, [theme]);
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<Login theme={theme} setTheme={setTheme} />} />
+        <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />} />
         <Route path="/employee-management" element={<EmployeeManagement />} />
         <Route path="/inventory-management" element={<InventoryManagement />} />
         <Route path="/place-order" element={<PlaceOrder />} />
@@ -29,7 +37,6 @@ function App() {
         <Route path="/recover-password" element={<PasswordManagement />} />
         <Route path="/profileUpdate" element={<ProfileUpdate />} />
       </Routes>
-
     </Router>
   );
 }

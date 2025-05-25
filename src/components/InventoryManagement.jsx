@@ -5,18 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/inventoryManagement.scss';
 import { FiHome } from 'react-icons/fi';
 
-
 const InventoryManagement = () => {
   const [inventory, setInventory] = useState([]);
-  const [newItem, setNewItem] = useState({ name: '', price: '', type: '' });
+  const [newItem, setNewItem] = useState({ name: '', price: '', type: '', description: '' });
   const [selectedItem, setSelectedItem] = useState(null);
-  const [updateItem, setUpdateItem] = useState({ name: '', price: '', type: '' });
+  const [updateItem, setUpdateItem] = useState({ name: '', price: '', type: '', description: '' });
 
-  // Función para volver al menú
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Obtener inventario desde la API
     axios.get(`${apiUrl}/api/inventory`)
       .then(response => setInventory(response.data))
       .catch(error => console.error('Error fetching inventory:', error));
@@ -28,29 +25,25 @@ const InventoryManagement = () => {
   };
 
   const handleAddItem = () => {
-    // Validación del precio
-    if (isNaN(newItem.price) || newItem.price <= 0) {
-      console.error('El precio debe ser un número válido y mayor que 0');
-      return;
-    }
-    // Validación del tipo
-    if (!newItem.type) {
-      console.error('El tipo es obligatorio');
-      return;
-    }
+    if (isNaN(newItem.price) || newItem.price <= 0) return console.error('El precio debe ser válido');
+    if (!newItem.type) return console.error('El tipo es obligatorio');
 
-    // Crear artículo en el inventario
     axios.post(`${apiUrl}/api/inventory`, newItem)
       .then(response => {
-        setInventory(prevInventory => [...prevInventory, response.data]);
-        setNewItem({ name: '', price: '', type: '' }); // Limpiar campos
+        setInventory(prev => [...prev, response.data]);
+        setNewItem({ name: '', price: '', type: '', description: '' });
       })
       .catch(error => console.error('Error adding item:', error));
   };
 
   const handleSelectItem = (item) => {
     setSelectedItem(item);
-    setUpdateItem({ name: item.name, price: item.price, type: item.type });
+    setUpdateItem({
+      name: item.name,
+      price: item.price,
+      type: item.type,
+      description: item.description || ''
+    });
   };
 
   const handleUpdateInputChange = (e) => {
@@ -59,25 +52,16 @@ const InventoryManagement = () => {
   };
 
   const handleUpdateItem = () => {
-    // Validación del precio
-    if (isNaN(updateItem.price) || updateItem.price <= 0) {
-      console.error('El precio debe ser un número válido y mayor que 0');
-      return;
-    }
-    // Validación del tipo
-    if (!updateItem.type) {
-      console.error('El tipo es obligatorio');
-      return;
-    }
+    if (isNaN(updateItem.price) || updateItem.price <= 0) return console.error('El precio debe ser válido');
+    if (!updateItem.type) return console.error('El tipo es obligatorio');
 
-    // Actualizar artículo en el inventario
     axios.put(`${apiUrl}/api/inventory/${selectedItem.id}`, updateItem)
       .then(response => {
-        setInventory(prevInventory => prevInventory.map(item =>
-          item.id === selectedItem.id ? response.data : item
-        ));
-        setUpdateItem({ name: '', price: '', type: '' });
-        setSelectedItem(null); // Limpiar el artículo seleccionado
+        setInventory(prev =>
+          prev.map(item => (item.id === selectedItem.id ? response.data : item))
+        );
+        setUpdateItem({ name: '', price: '', type: '', description: '' });
+        setSelectedItem(null);
       })
       .catch(error => console.error('Error updating item:', error));
   };
@@ -85,25 +69,24 @@ const InventoryManagement = () => {
   const handleDeleteItem = (id) => {
     axios.delete(`${apiUrl}/api/inventory/${id}`)
       .then(() => {
-        setInventory(prevInventory => prevInventory.filter(item => item.id !== id));
+        setInventory(prev => prev.filter(item => item.id !== id));
       })
       .catch(error => console.error('Error deleting item:', error));
   };
 
- const handleCancelUpdate = () => {
-    // Reseteamos el estado de la selección y el formulario de actualización
+  const handleCancelUpdate = () => {
     setSelectedItem(null);
-    setUpdateItem({ name: '', price: '', type: '' });
+    setUpdateItem({ name: '', price: '', type: '', description: '' });
   };
 
   return (
     <div className="inventory-management-container">
       <h1>Gestión de Inventario</h1>
-      <button  onClick={() => navigate('/dashboard')}>
-          <FiHome />
-        </button>
+      <button onClick={() => navigate('/dashboard')}>
+        <FiHome />
+      </button>
 
-      {/* Formulario para agregar un artículo */}
+      {/* Formulario para agregar artículo */}
       <div className="form-section">
         <input
           type="text"
@@ -124,10 +107,16 @@ const InventoryManagement = () => {
           <option value="tapa">Tapa</option>
           <option value="bebida">Bebida</option>
         </select>
+        <textarea
+          name="description"
+          placeholder="Descripción"
+          value={newItem.description}
+          onChange={handleInputChange}
+        />
         <button onClick={handleAddItem}>Agregar Artículo</button>
       </div>
 
-      {/* Formulario para actualizar un artículo */}
+      {/* Formulario para actualizar artículo */}
       {selectedItem && (
         <div className="form-section">
           <h2>Actualizar Artículo: {selectedItem.name}</h2>
@@ -150,41 +139,57 @@ const InventoryManagement = () => {
             <option value="tapa">Tapa</option>
             <option value="bebida">Bebida</option>
           </select>
+          <textarea
+            name="description"
+            placeholder="Descripción"
+            value={newItem.description}
+            onChange={handleInputChange}
+          />
           <button onClick={handleUpdateItem}>Actualizar Artículo</button>
           <button onClick={handleCancelUpdate}>Cancelar</button>
         </div>
       )}
 
-  {/* Sección de Bebidas */}
-  <h3>Bebidas</h3>
-  <ul>
-    {inventory
-      .filter(item => item.type === 'bebida') // Filtra solo los ítems de tipo 'bebida'
-      .sort((a, b) => a.price - b.price) // Ordena por precio
-      .map(item => (
-        <li key={item.id}>
-          {item.name} - ${item.price}
-            <button onClick={() => handleSelectItem(item)}>Editar</button>
-            <button onClick={() => handleDeleteItem(item.id)}>Eliminar</button>
-        </li>
-      ))}
-  </ul>
+      {/* Listado de Bebidas */}
+      <h3>Bebidas</h3>
+      <ul>
+        {inventory
+          .filter(item => item.type === 'bebida')
+          .sort((a, b) => a.price - b.price)
+          .map(item => (
+            <li key={item.id}>
+              <div>
+                <strong>{item.name}</strong> - ${item.price}
+                {item.description && <p>{item.description}</p>}
+              </div>
+              <div>
+                <button onClick={() => handleSelectItem(item)}>Editar</button>
+                <button onClick={() => handleDeleteItem(item.id)}>Eliminar</button>
+              </div>
+            </li>
+          ))}
+      </ul>
 
-  {/* Sección de Tapas */}
-  <h3>Tapas</h3>
-  <ul>
-    {inventory
-      .filter(item => item.type === 'tapa') // Filtra solo los ítems de tipo 'tapa'
-      .sort((a, b) => a.price - b.price) // Ordena por precio
-      .map(item => (
-        <li key={item.id}>
-          {item.name} - ${item.price}
-            <button onClick={() => handleSelectItem(item)}>Editar</button>
-            <button onClick={() => handleDeleteItem(item.id)}>Eliminar</button>
-        </li>
-      ))}
-  </ul>
-</div>
+      {/* Listado de Tapas */}
+      <h3>Tapas</h3>
+      <ul>
+        {inventory
+          .filter(item => item.type === 'tapa')
+          .sort((a, b) => a.price - b.price)
+          .map(item => (
+            <li key={item.id}>
+              <div>
+                <strong>{item.name}</strong> - ${item.price}
+                {item.description && <p>{item.description}</p>}
+              </div>
+              <div>
+                <button onClick={() => handleSelectItem(item)}>Editar</button>
+                <button onClick={() => handleDeleteItem(item.id)}>Eliminar</button>
+              </div>
+            </li>
+          ))}
+      </ul>
+    </div>
   );
 };
 

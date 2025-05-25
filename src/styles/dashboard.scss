@@ -1,7 +1,3 @@
-$color-red: #AE1100;
-$color-bg: #EBECF0;
-$color-shadow: #BABECC;
-$color-white: #FFF;
 $ruler: 16px;
 
 .dashboard-container {
@@ -9,46 +5,89 @@ $ruler: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $color-bg;
+  background: var(--color-bg);
 
   .dashboard-box {
-    background-color: $color-bg;
-    padding: $ruler * 2;
+    background: var(--color-bg);
+    box-shadow:
+      -8px -8px 24px var(--color-white),
+       8px  8px 24px var(--color-shadow),
+      0 1px 4px 0 rgba(0,0,0,0.07);
     border-radius: $ruler;
-    box-shadow: -5px -5px 15px $color-white, 5px 5px 15px $color-shadow;
+    padding: $ruler * 2;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: $ruler;
+    gap: $ruler * 0.5;
+    min-width: 320px;
+    width: 100%;
+    max-width: 460px;
+    transition: background 0.3s, box-shadow 0.3s;
 
     h1 {
-      color: $color-shadow;
-      text-shadow: 1px 1px 1px $color-white;
-      margin-bottom: $ruler;
+      color: var(--color-text);
+      text-shadow: 1px 1px 1px var(--color-white);
+      margin-bottom: $ruler * 1.5;
+      font-size: 2.8em;
+      text-align: center;
+      font-weight: 700;
     }
 
-    button {
-      width: 100%;
-      max-width: 240px;
-      padding: $ruler;
-      margin: 4px 0;
-      font-size: 1rem;
-      font-weight: 600;
+    .dashboard-btn {
+      width: 85%;
+      min-width: 240px;
+      max-width: 360px;
+      height: 60px;
+      margin: $ruler * 0.35 0;
+      border-radius: 32px;
+      font-size: 1.25em;
+      font-weight: 700;
       border: none;
-      border-radius: $ruler * 2;
-      background-color: $color-bg;
-      color: #61677C;
+      background: var(--color-bg);
+      color: var(--color-text);
       cursor: pointer;
-      box-shadow: -5px -5px 15px $color-white, 5px 5px 15px $color-shadow;
-      text-shadow: 1px 1px 0 $color-white;
-      transition: all 0.2s ease-in-out;
+      text-shadow: 1px 1px 0 var(--color-white);
+      box-shadow:
+        -5px -5px 20px var(--color-white),
+         5px  5px 20px var(--color-shadow),
+        inset 1px 1px 2px var(--color-shadow-inset),
+        inset -1px -1px 2px var(--color-white-inset);
+      transition: all 0.2s;
+      text-align: center;
+      display: block;
+    }
 
-      &:hover {
-        box-shadow: -2px -2px 5px $color-white, 2px 2px 5px $color-shadow;
+    .dashboard-btn.red {
+      background: var(--color-red-btn);
+      color: var(--color-red-btn-text);
+      text-shadow: none;
+      box-shadow:
+        -4px -4px 12px var(--color-white),
+         4px  4px 12px var(--color-shadow);
+    }
+    .dashboard-btn.gray {
+      background: var(--color-gray-btn);
+      color: var(--color-gray-btn-text);
+    }
+
+    .theme-switch {
+      align-self: flex-end;
+      margin-bottom: $ruler / 2;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    .dashboard-box {
+      padding: $ruler;
+      h1 {
+        font-size: 1.7em;
       }
-
-      &:active {
-        box-shadow: inset 1px 1px 2px $color-shadow, inset -1px -1px 2px $color-white;
+      .dashboard-btn {
+        min-width: 0;
+        font-size: 1em;
+        height: 48px;
       }
     }
   }

@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { apiUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
-import '../styles/menu.scss'
+import '../styles/menu.scss';
 
 const Menu = () => {
   const [inventory, setInventory] = useState([]);
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(`${apiUrl}/api/inventory`)
@@ -15,11 +15,34 @@ const Menu = () => {
   }, []);
 
   const handleLogout = () => {
-    history('/');
+    navigate('/');
   };
 
-  const getImageUrl = (item) => item.image || 'https://via.placeholder.com/400x250';
+  const getImageUrl = (item) => {
+    if (item.image && typeof item.image === 'string' && item.image.startsWith('http')) {
+      return item.image;
+    }
+    return 'https://via.placeholder.com/400x250';
+  };
+
   const getDescription = (item) => item.description || 'Delicious item to enjoy!';
+
+  const renderItems = (type) =>
+    inventory
+      .filter(item => item.type === type)
+      .sort((a, b) => a.price - b.price)
+      .map(item => (
+        <div className="card" key={item.id}>
+          <div className="card-image">
+            <img src={getImageUrl(item)} alt={item.name} />
+          </div>
+          <div className="card-text">
+            <h2 className="card-title">{item.name}</h2>
+            <p className="card-body">{getDescription(item)}</p>
+          </div>
+          <div className="card-price">${item.price}</div>
+        </div>
+      ));
 
   return (
     <div className="menu">
@@ -31,40 +54,12 @@ const Menu = () => {
 
       <section className="container">
         <h2>Bebidas</h2>
-        {inventory
-          .filter(item => item.type === 'bebida')
-          .sort((a, b) => a.price - b.price)
-          .map(item => (
-            <div className="card" key={item.id}>
-              <div className="card-image">
-                <img src={getImageUrl(item)} alt={item.name} />
-              </div>
-              <div className="card-text">
-                <h2 className="card-title">{item.name}</h2>
-                <p className="card-body">{getDescription(item)}</p>
-              </div>
-              <div className="card-price">${item.price}</div>
-            </div>
-          ))}
+        {renderItems('bebida')}
       </section>
 
       <section className="container">
         <h2>Tapas</h2>
-        {inventory
-          .filter(item => item.type === 'tapa')
-          .sort((a, b) => a.price - b.price)
-          .map(item => (
-            <div className="card" key={item.id}>
-              <div className="card-image">
-                <img src={getImageUrl(item)} alt={item.name} />
-              </div>
-              <div className="card-text">
-                <h2 className="card-title">{item.name}</h2>
-                <p className="card-body">{getDescription(item)}</p>
-              </div>
-              <div className="card-price">${item.price}</div>
-            </div>
-          ))}
+        {renderItems('tapa')}
       </section>
 
       <footer className="footer">

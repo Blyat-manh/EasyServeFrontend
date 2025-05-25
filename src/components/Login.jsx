@@ -3,8 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { apiUrl } from '../App';
 import '../styles/login.scss';
+import ThemeSwitch from "./ThemeSwitch";
 
-const Login = () => {
+const Login = ({ theme, setTheme }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -38,6 +39,7 @@ const Login = () => {
       <form onSubmit={handleLogin} className="login-form">
         <div className="segment">
           <h2>Iniciar Sesión</h2>
+          <ThemeSwitch theme={theme} setTheme={setTheme} />
         </div>
 
         <div className="login-box">
