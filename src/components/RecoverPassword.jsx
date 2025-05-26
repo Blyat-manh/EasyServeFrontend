@@ -39,7 +39,6 @@ const RecoverPassword = () => {
 
     return (
         <div className="form-wrapper">
-            <button onClick={() => navigate('/')}>Cancelar</button>
             <form onSubmit={handleSubmit} className="login-form">
                 <div className="segment">
                     <h2>Recuperar Contraseña</h2>
@@ -103,6 +102,7 @@ const RecoverPassword = () => {
                 </div>
 
                 <button type="submit" className="button">Restablecer Contraseña</button>
+                <button onClick={() => navigate('/')}>Cancelar</button>
             </form>
         </div>
     );

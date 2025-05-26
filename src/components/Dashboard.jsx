@@ -25,15 +25,15 @@ const Dashboard = ({ theme, setTheme }) => {
         {userRole === "encargado" && (
           <>
             <button className="dashboard-btn" onClick={() => navigate("/employee-management")}>
-              Manage Employees
+              Gestionar Emplados
             </button>
             <button className="dashboard-btn" onClick={() => navigate("/inventory-management")}>
-              Manage Inventory
+              Gestionar Inventario
             </button>
           </>
         )}
         {(userRole === "encargado" || userRole === "camarero") && (
-          <button className="dashboard-btn" onClick={() => navigate("/place-order")}>Place Order</button>
+          <button className="dashboard-btn" onClick={() => navigate("/place-order")}>Pedidos</button>
         )}
         {userRole === "cocina" && (
           <button className="dashboard-btn" onClick={() => navigate("/historial-pedidos")}>
@@ -42,7 +42,7 @@ const Dashboard = ({ theme, setTheme }) => {
         )}
         {userRole === "encargado" && (
           <>
-          <button className="dashboard-btn" onClick={() => navigate("/hacer-caja")}>End day</button>
+          <button className="dashboard-btn" onClick={() => navigate("/hacer-caja")}>Historial de cobros</button>
           <button className="dashboard-btn" onClick={() => navigate("/table-management")}>Cambiar mesas</button>
           </>
         )}

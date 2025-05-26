@@ -7,9 +7,9 @@ import { FiHome } from 'react-icons/fi';
 
 const InventoryManagement = () => {
   const [inventory, setInventory] = useState([]);
-  const [newItem, setNewItem] = useState({ name: '', price: '', type: '', description: '' });
+  const [newItem, setNewItem] = useState({ name: '', price: '', type: '', description: '', image: '' });
   const [selectedItem, setSelectedItem] = useState(null);
-  const [updateItem, setUpdateItem] = useState({ name: '', price: '', type: '', description: '' });
+  const [updateItem, setUpdateItem] = useState({ name: '', price: '', type: '', description: '', image: '' });
 
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ const InventoryManagement = () => {
     axios.post(`${apiUrl}/api/inventory`, newItem)
       .then(response => {
         setInventory(prev => [...prev, response.data]);
-        setNewItem({ name: '', price: '', type: '', description: '' });
+        setNewItem({ name: '', price: '', type: '', description: '', image: '' });
       })
       .catch(error => console.error('Error adding item:', error));
   };
@@ -42,7 +42,8 @@ const InventoryManagement = () => {
       name: item.name,
       price: item.price,
       type: item.type,
-      description: item.description || ''
+      description: item.description || '',
+      image: item.image || ''
     });
   };
 
@@ -60,7 +61,7 @@ const InventoryManagement = () => {
         setInventory(prev =>
           prev.map(item => (item.id === selectedItem.id ? response.data : item))
         );
-        setUpdateItem({ name: '', price: '', type: '', description: '' });
+        setUpdateItem({ name: '', price: '', type: '', description: '', image: '' });
         setSelectedItem(null);
       })
       .catch(error => console.error('Error updating item:', error));
@@ -76,7 +77,7 @@ const InventoryManagement = () => {
 
   const handleCancelUpdate = () => {
     setSelectedItem(null);
-    setUpdateItem({ name: '', price: '', type: '', description: '' });
+    setUpdateItem({ name: '', price: '', type: '', description: '', image: '' });
   };
 
   return (
@@ -113,6 +114,13 @@ const InventoryManagement = () => {
           value={newItem.description}
           onChange={handleInputChange}
         />
+        <input
+          type="text"
+          name="image"
+          placeholder="Enlace a la imagen (opcional)"
+          value={newItem.image}
+          onChange={handleInputChange}
+        />
         <button onClick={handleAddItem}>Agregar Artículo</button>
       </div>
 
@@ -142,8 +150,15 @@ const InventoryManagement = () => {
           <textarea
             name="description"
             placeholder="Descripción"
-            value={newItem.description}
-            onChange={handleInputChange}
+            value={updateItem.description}
+            onChange={handleUpdateInputChange}
+          />
+          <input
+            type="text"
+            name="image"
+            placeholder="Enlace a la imagen (opcional)"
+            value={updateItem.image}
+            onChange={handleUpdateInputChange}
           />
           <button onClick={handleUpdateItem}>Actualizar Artículo</button>
           <button onClick={handleCancelUpdate}>Cancelar</button>
@@ -161,6 +176,11 @@ const InventoryManagement = () => {
               <div>
                 <strong>{item.name}</strong> - ${item.price}
                 {item.description && <p>{item.description}</p>}
+                {item.image &&
+                  <div>
+                    <img src={item.image} alt={item.name} style={{ maxWidth: "120px", maxHeight: "80px" }} />
+                  </div>
+                }
               </div>
               <div>
                 <button onClick={() => handleSelectItem(item)}>Editar</button>
@@ -181,6 +201,11 @@ const InventoryManagement = () => {
               <div>
                 <strong>{item.name}</strong> - ${item.price}
                 {item.description && <p>{item.description}</p>}
+                {item.image &&
+                  <div>
+                    <img src={item.image} alt={item.name} style={{ maxWidth: "120px", maxHeight: "80px" }} />
+                  </div>
+                }
               </div>
               <div>
                 <button onClick={() => handleSelectItem(item)}>Editar</button>
