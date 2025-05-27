@@ -1,22 +1,39 @@
-$color-bg: #EBECF0;
-$color-shadow: #BABECC;
-$color-white: #FFF;
-$color-text: #61677C;
-$color-red: #AE1100;
+:root {
+  --color-bg: #EBECF0;
+  --color-shadow: #BABECC;
+  --color-white: #FFF;
+  --color-text: #61677C;
+  --color-red: #AE1100;
+  --color-shadow-inset: #8a8f9a40;
+  --color-white-inset: #ffffff80;
+}
+
+body.dark-theme {
+  --color-bg: #22262f;
+  --color-shadow: #0b0e15;
+  --color-white: #1a1d24;
+  --color-text: #c3cad9;
+  --color-red: #e83a2e;
+  --color-shadow-inset: #14181f90;
+  --color-white-inset: #41475380;
+}
+
 $ruler: 16px;
 
 .employee-management-container {
-  background-color: $color-bg;
+  background-color: var(--color-bg);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: $ruler * 2;
+  transition: background-color 0.3s, color 0.3s;
 
   h1, h2 {
-    color: $color-shadow;
-    text-shadow: 1px 1px 1px $color-white;
+    color: var(--color-shadow);
+    text-shadow: 1px 1px 1px var(--color-white);
     margin-bottom: $ruler;
+    transition: color 0.3s, text-shadow 0.3s;
   }
 
   button {
@@ -26,25 +43,35 @@ $ruler: 16px;
     font-weight: 600;
     border: none;
     border-radius: $ruler * 2;
-    background-color: $color-bg;
-    color: $color-text;
+    background-color: var(--color-bg);
+    color: var(--color-text);
     cursor: pointer;
-    box-shadow: -5px -5px 15px $color-white, 5px 5px 15px $color-shadow;
-    text-shadow: 1px 1px 0 $color-white;
+    box-shadow: -5px -5px 15px var(--color-white), 5px 5px 15px var(--color-shadow);
+    text-shadow: 1px 1px 0 var(--color-white);
     transition: all 0.2s ease-in-out;
 
     &:hover {
-      box-shadow: -2px -2px 5px $color-white, 2px 2px 5px $color-shadow;
+      box-shadow: -2px -2px 5px var(--color-white), 2px 2px 5px var(--color-shadow);
     }
 
     &:active {
-      box-shadow: inset 1px 1px 2px $color-shadow, inset -1px -1px 2px $color-white;
+      box-shadow: inset 1px 1px 2px var(--color-shadow), inset -1px -1px 2px var(--color-white);
     }
   }
 
+  .theme-toggle-btn {
+    font-size: 1.3rem;
+    padding: 0.2rem 0.5rem;
+    background: var(--color-bg);
+    border-radius: $ruler;
+    box-shadow: -3px -3px 8px var(--color-white), 3px 3px 8px var(--color-shadow);
+    transition: background 0.3s, box-shadow 0.3s, color 0.3s;
+    color: var(--color-text);
+  }
+
   .form-section {
-    background-color: $color-bg;
-    box-shadow: -4px -4px 12px $color-white, 4px 4px 12px $color-shadow;
+    background-color: var(--color-bg);
+    box-shadow: -4px -4px 12px var(--color-white), 4px 4px 12px var(--color-shadow);
     border-radius: $ruler;
     padding: $ruler * 1.5;
     margin-bottom: $ruler * 2;
@@ -58,14 +85,16 @@ $ruler: 16px;
       padding: $ruler / 1.2;
       border: none;
       border-radius: $ruler;
-      box-shadow: inset 2px 2px 5px $color-shadow, inset -5px -5px 10px $color-white;
+      box-shadow: inset 2px 2px 5px var(--color-shadow), inset -5px -5px 10px var(--color-white);
       width: 100%;
       font-size: 1rem;
-      color: $color-text;
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      transition: background-color 0.3s, color 0.3s;
 
       &:focus {
         outline: none;
-        box-shadow: inset 1px 1px 2px $color-shadow, inset -1px -1px 2px $color-white;
+        box-shadow: inset 1px 1px 2px var(--color-shadow), inset -1px -1px 2px var(--color-white);
       }
     }
   }
@@ -77,42 +106,70 @@ $ruler: 16px;
     max-width: 500px;
 
     li {
-      background-color: $color-bg;
-      box-shadow: -3px -3px 8px $color-white, 3px 3px 8px $color-shadow;
-      padding: $ruler;
-      margin-bottom: $ruler / 2;
+      background-color: var(--color-bg);
+      box-shadow: -3px -3px 8px var(--color-white), 3px 3px 8px var(--color-shadow);
+      margin-bottom: 1rem;
       border-radius: $ruler;
+      padding: $ruler / 2;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1rem;
-      color: $color-text;
-    }
+      color: var(--color-text);
+      transition: background-color 0.3s, color 0.3s;
 
-    button {
-      margin-left: 0.5rem;
-      font-size: 0.9rem;
-      padding: $ruler / 2 $ruler;
-
-      &:nth-child(2) {
-        color: $color-red;
+      button {
+        margin-left: 0.5rem;
       }
     }
   }
-}
-.password-input {
-  display: flex;
-  align-items: center;
 
-  input {
-    flex: 1;
+  .password-input {
+    display: flex;
+    align-items: center;
+
+    input {
+      flex: 1;
+    }
+
+    button {
+      margin-left: 0.3rem;
+      background: transparent;
+      box-shadow: none;
+      font-size: 1.1rem;
+      color: var(--color-text);
+      user-select: none;
+    }
   }
 
-  button {
-    margin-left: 5px;
-    cursor: pointer;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
+  .home-btn {
+    font-size: 1.4rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-radius: $ruler * 2;
+    box-shadow: -3px -3px 8px var(--color-white), 3px 3px 8px var(--color-shadow);
+  }
+
+  header {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $ruler * 2;
+    color: var(--color-text);
+    transition: color 0.3s;
+  }
+}
+
+@media (max-width: 600px) {
+  .employee-management-container {
+    padding: $ruler;
+
+    .form-section {
+      padding: $ruler;
+    }
+  }
+  ul {
+    max-width: 100vw;
   }
 }

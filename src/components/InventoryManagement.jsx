@@ -4,8 +4,9 @@ import { apiUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
 import '../styles/inventoryManagement.scss';
 import { FiHome } from 'react-icons/fi';
+import ThemeSwitch from './ThemeSwitch';
 
-const InventoryManagement = () => {
+const InventoryManagement = ({ theme, setTheme }) => {
   const [inventory, setInventory] = useState([]);
   const [newItem, setNewItem] = useState({ name: '', price: '', type: '', description: '', image: '' });
   const [selectedItem, setSelectedItem] = useState(null);
@@ -83,6 +84,7 @@ const InventoryManagement = () => {
   return (
     <div className="inventory-management-container">
       <h1>Gestión de Inventario</h1>
+      <ThemeSwitch theme={theme} setTheme={setTheme} />
       <button onClick={() => navigate('/dashboard')}>
         <FiHome />
       </button>

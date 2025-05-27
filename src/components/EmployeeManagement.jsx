@@ -4,9 +4,21 @@ import { apiUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
 import '../styles/employeeManagement.scss';
 import { FiHome } from 'react-icons/fi';
-
+import ThemeSwitch from './ThemeSwitch';
 
 const EmployeeManagement = () => {
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) setTheme(savedTheme);
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-theme', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
   const [employees, setEmployees] = useState([]);
   const [newEmployee, setNewEmployee] = useState({
     name: '', role: '', password: '', confirmPassword: '', securityAnswer: ''
@@ -84,22 +96,23 @@ const EmployeeManagement = () => {
       securityAnswer: employee.securityAnswer || ''
     });
   };
+
   const handleCancelUpdate = () => {
     setSelectedEmployee(null);
     setUpdateEmployee({ name: '', role: '', password: '', securityAnswer: '' });
   };
 
-
   return (
     <div className="employee-management-container">
       <header className="header">
         <h1>Gestión de Empleados</h1>
-        <button className="home-btn" onClick={() => navigate('/dashboard')}>
-          <FiHome />
-        </button>
+        <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+          <ThemeSwitch theme={theme} setTheme={setTheme} />
+          <button className="home-btn" onClick={() => navigate('/dashboard')}>
+            <FiHome />
+          </button>
+        </div>
       </header>
-
-
 
       {/* Formulario para agregar */}
       <div className="form-section">
@@ -193,7 +206,6 @@ const EmployeeManagement = () => {
           <button onClick={handleCancelUpdate}>Cancelar</button>
         </div>
       )}
-
 
       {/* Lista empleados */}
       <ul>

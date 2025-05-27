@@ -1,0 +1,226 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: #f7ede2;
+  perspective: 1000px;
+}
+
+body * {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+body *::before,
+body *::after {
+  position: absolute;
+  content: '';
+}
+
+.not-found-container {
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  color: #3c413c;
+}
+
+.scene {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 1px;
+  transform: rotateX(54.7deg) rotateZ(-45deg);
+}
+
+
+// CUBO Y LADOS
+.cube {
+  color: #3c413c;
+  transform-origin: 0.5px 0.5px 0.5px;
+  transform-style: preserve-3d;
+
+  &,
+  &::before,
+  .cube__side,
+  .cube__side:before {
+    width: 100px;
+    aspect-ratio: 1/1;
+    border: 1px solid currentColor;
+    box-sizing: border-box;
+  }
+
+  &::before {
+    top: -1px;
+    left: -1px;
+    translate: 0 0 1px;
+  }
+
+  .cube__side:before {
+    top: -1px;
+    left: -1px;
+    translate: 0 0 -1px;
+  }
+
+  .cube__side {
+    top: -1px;
+    left: -1px;
+  }
+
+  .cube__side:nth-child(1) { translate: 0 0 100px; }
+  .cube__side:nth-child(2) { transform-origin: top left; transform: rotateY(-90deg); }
+  .cube__side:nth-child(3) { transform-origin: bottom right; transform: rotateY(90deg); }
+  .cube__side:nth-child(4) { transform-origin: bottom right; transform: rotateX(-90deg); }
+  .cube__side:nth-child(5) { transform-origin: top left; transform: rotateX(90deg); }
+  .cube__side:nth-child(6) { transform: rotateY(180deg); }
+
+  .ball,
+  .ball::before,
+  .ball::after {
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: currentColor;
+    transform-origin: center center;
+  }
+
+  .ball::before { transform: rotateY(90deg); }
+  .ball::after { transform: rotateX(125deg) rotateY(25deg); }
+}
+
+// COLORES Y TRANSFORMACIONES DE BOLAS
+.cube1 .ball { color: #84a59d; transform: translateZ(50px) rotateX(-45deg) rotateY(-45deg); }
+.cube2 .ball { color: #f28482; transform: translateZ(50px) rotateX(-45deg) rotateY(45deg); }
+.cube3 .ball { color: #f28482; transform: translateZ(50px) rotateX(-135deg) rotateY(135deg); }
+.cube4 .ball { color: #84a59d; transform: translateZ(50px) rotateX(45deg) rotateY(-45deg); }
+.cube5 .ball { color: #84a59d; transform: translateZ(50px) rotateX(135deg) rotateY(-45deg); }
+.cube6 .ball { color: #f28482; transform: translateZ(50px) rotateX(135deg) rotateY(-45deg); }
+.cube7 .ball { color: #84a59d; transform: translateZ(50px) rotateX(135deg) rotateY(135deg); }
+.cube8 .ball { color: #f28482; transform: translateZ(50px) rotateX(45deg) rotateY(-45deg); }
+
+// POSICIÓN Y ANIMACIONES DE CUBOS
+.cube1 {
+  transform: translate3d(-200px, -200px, 0) rotateX(0deg) rotateY(0deg);
+  animation: spin1 6s linear infinite;
+}
+
+.cube2 {
+  transform: translate3d(200px, -200px, 0) rotateX(0deg) rotateY(0deg);
+  animation: spin2 7s linear infinite;
+}
+
+.cube3 {
+  transform: translate3d(-200px, 200px, 0) rotateX(0deg) rotateY(0deg);
+  animation: spin3 8s linear infinite;
+}
+
+.cube4 {
+  transform: translate3d(200px, 200px, 0) rotateX(0deg) rotateY(0deg);
+  animation: spin4 5s linear infinite;
+}
+
+.cube5 {
+  transform: translate3d(-300px, 0px, 100px) rotateX(0deg) rotateY(0deg);
+  animation: spin5 9s linear infinite;
+}
+
+.cube6 {
+  transform: translate3d(300px, 0px, 100px) rotateX(0deg) rotateY(0deg);
+  animation: spin6 6.5s linear infinite;
+}
+
+.cube7 {
+  transform: translate3d(0px, -300px, -100px) rotateX(0deg) rotateY(0deg);
+  animation: spin7 7.5s linear infinite;
+}
+
+.cube8 {
+  transform: translate3d(0px, 300px, -100px) rotateX(0deg) rotateY(0deg);
+  animation: spin8 8.5s linear infinite;
+}
+
+// ANIMACIONES
+@keyframes spin1 {
+  100% { transform: translate3d(-200px, -200px, 0) rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes spin2 {
+  100% { transform: translate3d(200px, -200px, 0) rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes spin3 {
+  100% { transform: translate3d(-200px, 200px, 0) rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes spin4 {
+  100% { transform: translate3d(200px, 200px, 0) rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes spin5 {
+  100% { transform: translate3d(-300px, 0px, 100px) rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes spin6 {
+  100% { transform: translate3d(300px, 0px, 100px) rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes spin7 {
+  100% { transform: translate3d(0px, -300px, -100px) rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes spin8 {
+  100% { transform: translate3d(0px, 300px, -100px) rotateX(360deg) rotateY(360deg); }
+}
+
+// MENSAJE CENTRADO
+.message-box {
+  position: fixed;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  background: #f7ede2;
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow:
+    -8px -8px 24px #ffffff,
+     8px  8px 24px #e0d3c5,
+    inset 2px 2px 4px #e0d3c5,
+    inset -2px -2px 4px #ffffff;
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 1px #fff;
+  }
+
+  .button {
+    background: none;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    border-radius: 32px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow:
+      -5px -5px 15px #ffffff,
+       5px  5px 15px #d5c5b8,
+      inset 1px 1px 2px #d5c5b8,
+      inset -1px -1px 2px #ffffff;
+    text-shadow: 1px 1px 0 #fff;
+    transition: all 0.2s ease;
+  }
+
+  .button:hover {
+    box-shadow:
+      -2px -2px 8px #ffffff,
+       2px  2px 8px #d5c5b8;
+  }
+
+  .button:active {
+    box-shadow:
+      inset 2px 2px 4px #d5c5b8,
+      inset -2px -2px 4px #ffffff;
+  }
+}

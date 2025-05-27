@@ -4,10 +4,24 @@ import { apiUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
 import { DateRange } from 'react-date-range';
 import { format } from 'date-fns';
-import '../styles/dailyRevenue.scss'
+import '../styles/dailyRevenue.scss';
 import { FiHome } from 'react-icons/fi';
+import ThemeSwitch from './ThemeSwitch';
 
 const DailyRevenue = () => {
+  // Estado tema: "light" o "dark"
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) setTheme(savedTheme);
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-theme', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
   const [dailyRevenues, setDailyRevenues] = useState([]);
   const [filteredRevenues, setFilteredRevenues] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -28,17 +42,16 @@ const DailyRevenue = () => {
   }, []);
 
   // Mostrar todos los ingresos cuando se cargan inicialmente
-useEffect(() => {
-  setFilteredRevenues(dailyRevenues);
-}, [dailyRevenues]);
+  useEffect(() => {
+    setFilteredRevenues(dailyRevenues);
+  }, [dailyRevenues]);
 
-// Filtrar solo si el calendario está abierto
-useEffect(() => {
-  if (showCalendar) {
-    filterRevenues();
-  }
-}, [range]);
-
+  // Filtrar solo si el calendario está abierto
+  useEffect(() => {
+    if (showCalendar) {
+      filterRevenues();
+    }
+  }, [range]);  
 
   const fetchDailyRevenues = async () => {
     try {
@@ -75,11 +88,16 @@ useEffect(() => {
   };
 
   return (
-    <div>
-      <h1>Ingresos Diarios</h1>
-      <button className="home-btn" onClick={() => navigate('/dashboard')}>
-          <FiHome />
-        </button>
+    <div className="daily-revenue-container">
+      <header className="header">
+        <h1>Ingresos Diarios</h1>
+        <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+          <ThemeSwitch theme={theme} setTheme={setTheme} />
+          <button className="home-btn" onClick={() => navigate('/dashboard')}>
+            <FiHome />
+          </button>
+        </div>
+      </header>
       <button onClick={handleEndDay} disabled={loading}>
         {loading ? 'Procesando...' : 'Finalizar Día'}
       </button>
@@ -121,17 +139,19 @@ useEffect(() => {
       </div>
 
       <h2>Historial de ingresos</h2>
-      {filteredRevenues.length === 0 ? (
-        <p>No hay ingresos en el rango seleccionado.</p>
-      ) : (
-        <ul>
-          {filteredRevenues.map(({ id, date, total }) => (
-            <li key={id}>
-              Fecha: {date} — Total: ${isNaN(total) ? 'N/A' : Number(total).toFixed(2)}
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="revenue-list-container">
+        {filteredRevenues.length === 0 ? (
+          <p>No hay ingresos en el rango seleccionado.</p>
+        ) : (
+          <ul>
+            {filteredRevenues.map(({ id, date, total }) => (
+              <li key={id}>
+                Fecha: {date} — Total: ${isNaN(total) ? 'N/A' : Number(total).toFixed(2)}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
