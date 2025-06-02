@@ -37,7 +37,7 @@ const PlaceOrder = () => {
       .then((res) => setAvailableTables(res.data))
       .catch((err) => console.error("Error al cargar mesas:", err));
 
-    fetchOrders(); // Nuevo
+    fetchOrders();
   }, []);
 
   const fetchOrders = () => {
@@ -54,7 +54,6 @@ const PlaceOrder = () => {
       })
       .catch((err) => console.error("Error cargando pedidos:", err));
   };
-
 
   const applyDiscount = (subtotal) => {
     for (const rate of discountRates) {
@@ -96,51 +95,48 @@ const PlaceOrder = () => {
   };
 
   const handleConfirmOrder = () => {
-  if (!selectedTable || order.length === 0) {
-    return alert("Mesa y pedido requeridos");
-  }
+    if (!selectedTable || order.length === 0) {
+      return alert("Mesa y pedido requeridos");
+    }
 
-  // Buscamos la mesa seleccionada en availableTables
-  const selectedTableObj = availableTables.find(
-    (table) => table.id === selectedTable
-  );
+    const selectedTableObj = availableTables.find(
+      (table) => table.id === selectedTable
+    );
 
-  if (!selectedTableObj) {
-    return alert("Mesa seleccionada no válida");
-  }
+    if (!selectedTableObj) {
+      return alert("Mesa seleccionada no válida");
+    }
 
-  if (selectedTableObj.status === "reserved") {
-    return alert("La mesa seleccionada está reservada. Por favor, elige otra mesa.");
-  }
+    if (selectedTableObj.status === "reserved") {
+      return alert("La mesa seleccionada está reservada. Por favor, elige otra mesa.");
+    }
 
-  const subtotal = order.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const { total } = applyDiscount(subtotal);
+    const subtotal = order.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const { total } = applyDiscount(subtotal);
 
-  const userId = localStorage.getItem("user_id"); // ejemplo, o context, o prop
+    const userId = localStorage.getItem("user_id");
 
-  const newOrder = {
-    table_number: selectedTableObj.table_number, // O id, depende de lo que espere tu API
-    user_id: userId,
-    items: order.map((item) => ({
-      inventory_id: item.id,
-      quantity: item.quantity,
-      price: item.price,
-    })),
+    const newOrder = {
+      table_number: selectedTableObj.table_number,
+      user_id: userId,
+      items: order.map((item) => ({
+        inventory_id: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+    };
+
+    axios
+      .post(`${apiUrl}/api/orders`, newOrder)
+      .then(() => {
+        setOrder([]);
+        fetchOrders();
+      })
+      .catch((err) => console.error("Error al crear pedido:", err));
   };
-
-  axios
-    .post(`${apiUrl}/api/orders`, newOrder)
-    .then(() => {
-      setOrder([]); // Limpia la orden
-      fetchOrders(); // Recarga pedidos
-    })
-    .catch((err) => console.error("Error al crear pedido:", err));
-};
-
-
 
   const handleDeleteOrder = (orderId, tableNumber) => {
     if (!window.confirm("¿Estás seguro de eliminar este pedido?")) return;
@@ -160,18 +156,24 @@ const PlaceOrder = () => {
       .catch((err) => console.error("Error eliminando pedido:", err));
   };
 
+  // Opción 1: Cobrar cada pedido de la mesa individualmente usando el endpoint ya disponible
   const handleMarkAsPaid = (tableNumber) => {
-    axios.post(`${apiUrl}/api/orders/chargeByTable/${tableNumber}`)
+    const orders = tables[tableNumber] || [];
+    if (!orders.length) return;
+
+    // Cobrar cada pedido (order_id) de la mesa uno por uno
+    Promise.all(
+      orders.map((order) =>
+        axios.post(`${apiUrl}/api/orders/charge/${order.order_id}`)
+      )
+    )
       .then(() => {
         const updated = { ...tables };
         delete updated[tableNumber];
         setTables(updated);
       })
-      .catch(err => console.error("Error cobrando mesa:", err));
+      .catch((err) => console.error("Error cobrando mesa:", err));
   };
-
-
-
 
   const handleEditOrder = (order, table) => {
     setEditingOrder({ ...order });
@@ -276,7 +278,6 @@ const PlaceOrder = () => {
       )}
     </div>
   );
-
 };
 
 export default PlaceOrder;
