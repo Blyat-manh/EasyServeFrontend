@@ -1,44 +1,112 @@
-:root {
-  --color-bg: #EBECF0;
-  --color-shadow: #BABECC;
-  --color-white: #FFF;
-  --color-text: #61677C;
-  --color-red: #AE1100;
-  --color-shadow-inset: #8a8f9a40;
-  --color-white-inset: #ffffff80;
-}
-
-body.dark-theme {
-  --color-bg: #22262f;
-  --color-shadow: #0b0e15;
-  --color-white: #1a1d24;
-  --color-text: #c3cad9;
-  --color-red: #e83a2e;
-  --color-shadow-inset: #14181f90;
-  --color-white-inset: #41475380;
-}
-
 $ruler: 16px;
 
-.employee-management-container {
-  background-color: var(--color-bg);
+// Fondo centrado
+.employee-management-bg {
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  transition: background-color 0.3s;
+  padding: 40px;
+}
+
+// Caja central
+.employee-management-box {
+  width: 100vw;
+  max-width: 510px;
+  min-width: 270px;
+  margin: 0 auto;
+  background-color: var(--color-bg);
+  border-radius: $ruler;
+  box-shadow:
+    -8px -8px 24px var(--color-white),
+     8px  8px 24px var(--color-shadow),
+     0 1px 4px 0 rgba(0,0,0,0.07);
+  padding: $ruler * 2 $ruler * 1.5;
+  box-sizing: border-box;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: $ruler * 2;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background 0.3s, box-shadow 0.3s;
+}
 
-  h1, h2 {
-    color: var(--color-shadow);
-    text-shadow: 1px 1px 1px var(--color-white);
-    margin-bottom: $ruler;
-    transition: color 0.3s, text-shadow 0.3s;
+// Fila tema + home
+.theme-switch-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: $ruler * 0.5;
+  .home-btn {
+    font-size: 1.4rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-radius: $ruler * 2;
+    box-shadow: -3px -3px 8px var(--color-white), 3px 3px 8px var(--color-shadow);
+    transition: background 0.3s, color 0.3s;
+    padding: 4px 12px;
+    cursor: pointer;
+    &:hover {
+      background: var(--color-white);
+      color: var(--color-red);
+    }
+  }
+}
+
+h1 {
+  text-align: center;
+  margin: 0 0 $ruler * 1.2 0;
+  font-size: 2em;
+  color: var(--color-title);
+  text-shadow: 1px 1px 1px var(--color-white);
+  font-weight: 700;
+  width: 100%;
+}
+
+h2 {
+  color: var(--color-title);
+  text-shadow: 1px 1px 1px var(--color-white);
+  font-size: 1.2em;
+  margin-bottom: $ruler * 0.5;
+  margin-top: 0;
+  text-align: center;
+}
+
+.form-section {
+  background-color: var(--color-bg);
+  box-shadow: -4px -4px 12px var(--color-white), 4px 4px 12px var(--color-shadow);
+  border-radius: $ruler;
+  padding: $ruler * 1.2 $ruler;
+  margin-bottom: $ruler * 1.3;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: $ruler * 0.7;
+  align-items: center;
+
+  input, select {
+    padding: $ruler / 1.2;
+    border: none;
+    border-radius: $ruler;
+    box-shadow: inset 2px 2px 5px var(--color-shadow), inset -5px -5px 10px var(--color-white);
+    width: 100%;
+    font-size: 1rem;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    margin-bottom: 0.5rem;
+    transition: background-color 0.3s, color 0.3s;
+    &:focus {
+      outline: none;
+      box-shadow: inset 1px 1px 2px var(--color-shadow), inset -1px -1px 2px var(--color-white);
+    }
   }
 
   button {
-    padding: $ruler / 1.2 $ruler * 1.5;
-    margin: 0.3rem;
+    width: 100%;
+    padding: $ruler * 0.7;
     font-size: 1rem;
     font-weight: 600;
     border: none;
@@ -46,9 +114,9 @@ $ruler: 16px;
     background-color: var(--color-bg);
     color: var(--color-text);
     cursor: pointer;
-    box-shadow: -5px -5px 15px var(--color-white), 5px 5px 15px var(--color-shadow);
     text-shadow: 1px 1px 0 var(--color-white);
-    transition: all 0.2s ease-in-out;
+    box-shadow: -5px -5px 15px var(--color-white), 5px 5px 15px var(--color-shadow);
+    transition: all 0.2s;
 
     &:hover {
       box-shadow: -2px -2px 5px var(--color-white), 2px 2px 5px var(--color-shadow);
@@ -58,118 +126,84 @@ $ruler: 16px;
       box-shadow: inset 1px 1px 2px var(--color-shadow), inset -1px -1px 2px var(--color-white);
     }
   }
+}
 
-  .theme-toggle-btn {
-    font-size: 1.3rem;
-    padding: 0.2rem 0.5rem;
-    background: var(--color-bg);
-    border-radius: $ruler;
-    box-shadow: -3px -3px 8px var(--color-white), 3px 3px 8px var(--color-shadow);
-    transition: background 0.3s, box-shadow 0.3s, color 0.3s;
-    color: var(--color-text);
+.employee-list-section {
+  width: 100%;
+  margin-bottom: $ruler * 1.2;
+  h2 {
+    margin-bottom: $ruler * 0.5;
   }
-
-  .form-section {
-    background-color: var(--color-bg);
-    box-shadow: -4px -4px 12px var(--color-white), 4px 4px 12px var(--color-shadow);
-    border-radius: $ruler;
-    padding: $ruler * 1.5;
-    margin-bottom: $ruler * 2;
-    width: 100%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: $ruler;
-
-    input, select {
-      padding: $ruler / 1.2;
-      border: none;
-      border-radius: $ruler;
-      box-shadow: inset 2px 2px 5px var(--color-shadow), inset -5px -5px 10px var(--color-white);
-      width: 100%;
-      font-size: 1rem;
-      color: var(--color-text);
-      background-color: var(--color-bg);
-      transition: background-color 0.3s, color 0.3s;
-
-      &:focus {
-        outline: none;
-        box-shadow: inset 1px 1px 2px var(--color-shadow), inset -1px -1px 2px var(--color-white);
-      }
-    }
-  }
-
   ul {
     list-style: none;
     padding: 0;
     width: 100%;
-    max-width: 500px;
+    margin: 0;
 
     li {
       background-color: var(--color-bg);
       box-shadow: -3px -3px 8px var(--color-white), 3px 3px 8px var(--color-shadow);
       margin-bottom: 1rem;
       border-radius: $ruler;
-      padding: $ruler / 2;
+      padding: $ruler / 2 $ruler;
       display: flex;
       justify-content: space-between;
       align-items: center;
       color: var(--color-text);
       transition: background-color 0.3s, color 0.3s;
+      gap: 1rem;
+
+      span:first-child {
+        flex: 2;
+      }
+      span:last-child {
+        display: flex;
+        gap: 0.5rem;
+        flex: 1;
+        justify-content: flex-end;
+      }
 
       button {
-        margin-left: 0.5rem;
+        padding: 0.45em 1em;
+        font-size: 0.97em;
+        margin: 0;
+        width: auto;
       }
     }
   }
+}
 
-  .password-input {
-    display: flex;
-    align-items: center;
-
-    input {
-      flex: 1;
-    }
-
-    button {
-      margin-left: 0.3rem;
-      background: transparent;
-      box-shadow: none;
-      font-size: 1.1rem;
-      color: var(--color-text);
-      user-select: none;
-    }
+.password-input {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  input {
+    flex: 1;
   }
-
-  .home-btn {
-    font-size: 1.4rem;
-    background: var(--color-bg);
+  button {
+    margin-left: 0.3rem;
+    background: transparent;
+    box-shadow: none;
+    font-size: 1.15rem;
     color: var(--color-text);
-    border-radius: $ruler * 2;
-    box-shadow: -3px -3px 8px var(--color-white), 3px 3px 8px var(--color-shadow);
-  }
-
-  header {
-    width: 100%;
-    max-width: 500px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: $ruler * 2;
-    color: var(--color-text);
-    transition: color 0.3s;
+    user-select: none;
+    padding: 0 0.5em;
+    max-width: 10%;
   }
 }
 
 @media (max-width: 600px) {
-  .employee-management-container {
+  .employee-management-box {
     padding: $ruler;
-
-    .form-section {
-      padding: $ruler;
-    }
+    max-width: 99vw;
   }
-  ul {
-    max-width: 100vw;
+  .form-section {
+    padding: $ruler;
+    max-width: 99vw;
+  }
+  .employee-list-section {
+    ul {
+      max-width: 99vw;
+    }
   }
 }

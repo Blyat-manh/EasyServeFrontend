@@ -16,10 +16,10 @@ const Dashboard = ({ theme, setTheme }) => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-box">
-        <h1>Dashboard</h1>
         <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
           <ThemeSwitch theme={theme} setTheme={setTheme} />
         </div>
+        <h1>Dashboard</h1>
         <button className="dashboard-btn" onClick={() => navigate('/profileUpdate')}>Mi Perfil</button>
 
         {userRole === "encargado" && (

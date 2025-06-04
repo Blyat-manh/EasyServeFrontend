@@ -1,12 +1,23 @@
 $ruler: 16px;
 
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-bg);
+  padding: 1rem;
+  box-sizing: border-box;
+  transition: background-color 0.3s;
+}
+
 .profile-update-container {
   background-color: var(--color-bg);
-  width: 90vw;
-  max-width: 460px;
-  min-width: 280px;
-  margin: 3rem auto;
-  padding: $ruler * 2;
+  width: 100vw;
+  max-width: 420px;
+  min-width: 260px;
+  margin: 0 auto;
+  padding: $ruler * 2 $ruler * 1.5;
   border-radius: $ruler;
   box-shadow:
     -8px -8px 24px var(--color-white),
@@ -15,20 +26,40 @@ $ruler: 16px;
   box-sizing: border-box;
   overflow: hidden;
   transition: background 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .theme-switch-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: $ruler * 0.5;
+  }
+
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
 
   h1 {
     text-align: center;
     margin-bottom: $ruler * 1.5;
-    font-size: 2.2em;
+    font-size: 2em;
     color: var(--color-text);
     text-shadow: 1px 1px 1px var(--color-white);
     font-weight: 700;
+    width: 100%;
   }
 
   .profile-form {
     display: flex;
     flex-direction: column;
     gap: $ruler;
+    align-items: center;
+    width: 100%;
 
     input {
       padding: $ruler * 0.75;
@@ -51,6 +82,7 @@ $ruler: 16px;
       align-items: center;
       gap: 0.5rem;
       flex-wrap: nowrap;
+      width: 100%;
 
       input {
         flex: 1;
@@ -70,12 +102,14 @@ $ruler: 16px;
       }
     }
 
-    .button-group {
+    .dashboard-btn-group {
       display: flex;
       flex-direction: column;
       gap: $ruler * 0.5;
+      width: 100%;
+      align-items: center;
 
-      button {
+      .dashboard-btn {
         width: 100%;
         padding: $ruler;
         font-size: 1.1rem;
@@ -92,6 +126,7 @@ $ruler: 16px;
           inset 1px 1px 2px var(--color-shadow-inset),
           inset -1px -1px 2px var(--color-white-inset);
         transition: all 0.2s ease-in-out;
+        display: block;
 
         &:hover {
           box-shadow:
@@ -108,26 +143,66 @@ $ruler: 16px;
     }
   }
 
-  @media (max-width: 320px) {
-    padding: $ruler;
-    width: 95vw;
+  .dashboard-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: $ruler * 0.5;
+    width: 100%;
+    align-items: center;
+
+    .dashboard-btn {
+      width: 100%;
+      padding: $ruler;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 32px;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      cursor: pointer;
+      text-shadow: 1px 1px 0 var(--color-white);
+      box-shadow:
+        -5px -5px 20px var(--color-white),
+         5px  5px 20px var(--color-shadow),
+        inset 1px 1px 2px var(--color-shadow-inset),
+        inset -1px -1px 2px var(--color-white-inset);
+      transition: all 0.2s ease-in-out;
+      display: block;
+
+      &:hover {
+        box-shadow:
+          -2px -2px 5px var(--color-white),
+           2px 2px 5px var(--color-shadow);
+      }
+
+      &:active {
+        box-shadow:
+          inset 1px 1px 2px var(--color-shadow),
+          inset -1px -1px 2px var(--color-white);
+      }
+    }
+  }
+
+  @media (max-width: 500px) {
+    padding: $ruler $ruler * 0.5;
+    width: 98vw;
     min-width: unset;
 
     h1 {
-      font-size: 1.7em;
+      font-size: 1.5em;
     }
 
-    .button-group button {
-      font-size: 0.9rem;
+    .dashboard-btn-group .dashboard-btn {
+      font-size: 0.95rem;
       padding: $ruler * 0.75;
     }
 
-    input {
-      font-size: 0.9rem;
+    .profile-form input {
+      font-size: 0.95rem;
       padding: $ruler * 0.5;
     }
 
-    .password-input {
+    .profile-form .password-input {
       gap: 0.25rem;
 
       .eye-btn {
@@ -136,15 +211,4 @@ $ruler: 16px;
       }
     }
   }
-}
-
-.page-wrapper {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--color-bg);
-  padding: 1rem;
-  box-sizing: border-box;
-  transition: background-color 0.3s;
 }

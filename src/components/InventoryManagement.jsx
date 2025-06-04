@@ -82,69 +82,35 @@ const InventoryManagement = ({ theme, setTheme }) => {
   };
 
   return (
-    <div className="inventory-management-container">
-      <h1>Gestión de Inventario</h1>
-      <ThemeSwitch theme={theme} setTheme={setTheme} />
-      <button onClick={() => navigate('/dashboard')}>
-        <FiHome />
-      </button>
+    <div className="inventory-management-bg">
+      <div className="inventory-management-box">
+        <div className="theme-switch-row">
+          <ThemeSwitch theme={theme} setTheme={setTheme} />
+          <button className="home-btn" onClick={() => navigate('/dashboard')}>
+            <FiHome />
+          </button>
+        </div>
 
-      {/* Formulario para agregar artículo */}
-      <div className="form-section">
-        <input
-          type="text"
-          name="name"
-          placeholder="Nombre del Artículo"
-          value={newItem.name}
-          onChange={handleInputChange}
-        />
-        <input
-          type="number"
-          name="price"
-          placeholder="Precio"
-          value={newItem.price}
-          onChange={handleInputChange}
-        />
-        <select name="type" value={newItem.type} onChange={handleInputChange}>
-          <option value="">Escoge el tipo</option>
-          <option value="tapa">Tapa</option>
-          <option value="bebida">Bebida</option>
-        </select>
-        <textarea
-          name="description"
-          placeholder="Descripción"
-          value={newItem.description}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="image"
-          placeholder="Enlace a la imagen (opcional)"
-          value={newItem.image}
-          onChange={handleInputChange}
-        />
-        <button onClick={handleAddItem}>Agregar Artículo</button>
-      </div>
+        <h1>Gestión de Inventario</h1>
 
-      {/* Formulario para actualizar artículo */}
-      {selectedItem && (
+        {/* Formulario para agregar artículo */}
         <div className="form-section">
-          <h2>Actualizar Artículo: {selectedItem.name}</h2>
+          <h2>Agregar Artículo</h2>
           <input
             type="text"
             name="name"
             placeholder="Nombre del Artículo"
-            value={updateItem.name}
-            onChange={handleUpdateInputChange}
+            value={newItem.name}
+            onChange={handleInputChange}
           />
           <input
             type="number"
             name="price"
             placeholder="Precio"
-            value={updateItem.price}
-            onChange={handleUpdateInputChange}
+            value={newItem.price}
+            onChange={handleInputChange}
           />
-          <select name="type" value={updateItem.type} onChange={handleUpdateInputChange}>
+          <select name="type" value={newItem.type} onChange={handleInputChange}>
             <option value="">Escoge el tipo</option>
             <option value="tapa">Tapa</option>
             <option value="bebida">Bebida</option>
@@ -152,70 +118,114 @@ const InventoryManagement = ({ theme, setTheme }) => {
           <textarea
             name="description"
             placeholder="Descripción"
-            value={updateItem.description}
-            onChange={handleUpdateInputChange}
+            value={newItem.description}
+            onChange={handleInputChange}
           />
           <input
             type="text"
             name="image"
             placeholder="Enlace a la imagen (opcional)"
-            value={updateItem.image}
-            onChange={handleUpdateInputChange}
+            value={newItem.image}
+            onChange={handleInputChange}
           />
-          <button onClick={handleUpdateItem}>Actualizar Artículo</button>
-          <button onClick={handleCancelUpdate}>Cancelar</button>
+          <button onClick={handleAddItem}>Agregar Artículo</button>
         </div>
-      )}
 
-      {/* Listado de Bebidas */}
-      <h3>Bebidas</h3>
-      <ul>
-        {inventory
-          .filter(item => item.type === 'bebida')
-          .sort((a, b) => a.price - b.price)
-          .map(item => (
-            <li key={item.id}>
-              <div>
-                <strong>{item.name}</strong> - ${item.price}
-                {item.description && <p>{item.description}</p>}
-                {item.image &&
-                  <div>
-                    <img src={item.image} alt={item.name} style={{ maxWidth: "120px", maxHeight: "80px" }} />
-                  </div>
-                }
-              </div>
-              <div>
-                <button onClick={() => handleSelectItem(item)}>Editar</button>
-                <button onClick={() => handleDeleteItem(item.id)}>Eliminar</button>
-              </div>
-            </li>
-          ))}
-      </ul>
+        {/* Formulario para actualizar artículo */}
+        {selectedItem && (
+          <div className="form-section">
+            <h2>Actualizar Artículo: {selectedItem.name}</h2>
+            <input
+              type="text"
+              name="name"
+              placeholder="Nombre del Artículo"
+              value={updateItem.name}
+              onChange={handleUpdateInputChange}
+            />
+            <input
+              type="number"
+              name="price"
+              placeholder="Precio"
+              value={updateItem.price}
+              onChange={handleUpdateInputChange}
+            />
+            <select name="type" value={updateItem.type} onChange={handleUpdateInputChange}>
+              <option value="">Escoge el tipo</option>
+              <option value="tapa">Tapa</option>
+              <option value="bebida">Bebida</option>
+            </select>
+            <textarea
+              name="description"
+              placeholder="Descripción"
+              value={updateItem.description}
+              onChange={handleUpdateInputChange}
+            />
+            <input
+              type="text"
+              name="image"
+              placeholder="Enlace a la imagen (opcional)"
+              value={updateItem.image}
+              onChange={handleUpdateInputChange}
+            />
+            <button onClick={handleUpdateItem}>Actualizar Artículo</button>
+            <button onClick={handleCancelUpdate}>Cancelar</button>
+          </div>
+        )}
 
-      {/* Listado de Tapas */}
-      <h3>Tapas</h3>
-      <ul>
-        {inventory
-          .filter(item => item.type === 'tapa')
-          .sort((a, b) => a.price - b.price)
-          .map(item => (
-            <li key={item.id}>
-              <div>
-                <strong>{item.name}</strong> - ${item.price}
-                {item.description && <p>{item.description}</p>}
-                {item.image &&
+        {/* Listado de Bebidas */}
+        <div className="inventory-list-section">
+          <h2>Bebidas</h2>
+          <ul>
+            {inventory
+              .filter(item => item.type === 'bebida')
+              .sort((a, b) => a.price - b.price)
+              .map(item => (
+                <li key={item.id}>
                   <div>
-                    <img src={item.image} alt={item.name} style={{ maxWidth: "120px", maxHeight: "80px" }} />
+                    <strong>{item.name}</strong> - ${item.price}
+                    {item.description && <p>{item.description}</p>}
+                    {item.image &&
+                      <div>
+                        <img src={item.image} alt={item.name} style={{ maxWidth: "120px", maxHeight: "80px" }} />
+                      </div>
+                    }
                   </div>
-                }
-              </div>
-              <div>
-                <button onClick={() => handleSelectItem(item)}>Editar</button>
-                <button onClick={() => handleDeleteItem(item.id)}>Eliminar</button>
-              </div>
-            </li>
-          ))}
-      </ul>
+                  <div>
+                    <button onClick={() => handleSelectItem(item)}>Editar</button>
+                    <button onClick={() => handleDeleteItem(item.id)}>Eliminar</button>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </div>
+
+        {/* Listado de Tapas */}
+        <div className="inventory-list-section">
+          <h2>Tapas</h2>
+          <ul>
+            {inventory
+              .filter(item => item.type === 'tapa')
+              .sort((a, b) => a.price - b.price)
+              .map(item => (
+                <li key={item.id}>
+                  <div>
+                    <strong>{item.name}</strong> - ${item.price}
+                    {item.description && <p>{item.description}</p>}
+                    {item.image &&
+                      <div>
+                        <img src={item.image} alt={item.name} style={{ maxWidth: "120px", maxHeight: "80px" }} />
+                      </div>
+                    }
+                  </div>
+                  <div>
+                    <button onClick={() => handleSelectItem(item)}>Editar</button>
+                    <button onClick={() => handleDeleteItem(item.id)}>Eliminar</button>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

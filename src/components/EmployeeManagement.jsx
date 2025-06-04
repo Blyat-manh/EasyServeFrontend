@@ -103,120 +103,126 @@ const EmployeeManagement = () => {
   };
 
   return (
-    <div className="employee-management-container">
-      <header className="header">
-        <h1>Gestión de Empleados</h1>
-        <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+    <div className="employee-management-bg">
+      <div className="employee-management-box">
+        <div className="theme-switch-row">
           <ThemeSwitch theme={theme} setTheme={setTheme} />
           <button className="home-btn" onClick={() => navigate('/dashboard')}>
             <FiHome />
           </button>
         </div>
-      </header>
 
-      {/* Formulario para agregar */}
-      <div className="form-section">
-        <h2>Agregar Empleado</h2>
-        <input
-          type="text"
-          name="name"
-          placeholder="Nombre"
-          value={newEmployee.name}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="securityAnswer"
-          placeholder="Nombre de su primera mascota"
-          value={newEmployee.securityAnswer}
-          onChange={handleInputChange}
-        />
-        <select name="role" value={newEmployee.role} onChange={handleInputChange}>
-          <option value="">Escoge un rol</option>
-          <option value="encargado">Encargado</option>
-          <option value="camarero">Camarero</option>
-          <option value="cocina">Cocina</option>
-        </select>
-        <div className="password-input">
+        <h1>Gestión de Empleados</h1>
+
+        {/* Formulario para agregar */}
+        <div className="form-section">
+          <h2>Agregar Empleado</h2>
           <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Contraseña"
-            value={newEmployee.password}
+            type="text"
+            name="name"
+            placeholder="Nombre"
+            value={newEmployee.name}
             onChange={handleInputChange}
           />
-          <button
-            type="button"
-            onMouseDown={() => setShowPassword(true)}
-            onMouseUp={() => setShowPassword(false)}
-            onMouseLeave={() => setShowPassword(false)}
-          >
-            👁
-          </button>
-        </div>
-        <input
-          type={showPassword ? "text" : "password"}
-          name="confirmPassword"
-          placeholder="Confirmar Contraseña"
-          value={newEmployee.confirmPassword}
-          onChange={handleInputChange}
-        />
-        <button onClick={handleAddEmployee}>Agregar Empleado</button>
-      </div>
-
-      {/* Formulario para actualizar */}
-      {selectedEmployee && (
-        <div className="form-section">
-          <h2>Actualizar Empleado: {selectedEmployee.name}</h2>
-          <select
-            name="role"
-            value={updateEmployee.role}
-            onChange={handleUpdateInputChange}
-          >
+          <input
+            type="text"
+            name="securityAnswer"
+            placeholder="Nombre de su primera mascota"
+            value={newEmployee.securityAnswer}
+            onChange={handleInputChange}
+          />
+          <select name="role" value={newEmployee.role} onChange={handleInputChange}>
             <option value="">Escoge un rol</option>
             <option value="encargado">Encargado</option>
             <option value="camarero">Camarero</option>
             <option value="cocina">Cocina</option>
           </select>
-          <input
-            type="text"
-            name="securityAnswer"
-            placeholder="Nombre de su primera mascota"
-            value={updateEmployee.securityAnswer}
-            onChange={handleUpdateInputChange}
-          />
           <div className="password-input">
             <input
-              type={showUpdatePassword ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="Nueva Contraseña"
-              value={updateEmployee.password}
-              onChange={handleUpdateInputChange}
+              placeholder="Contraseña"
+              value={newEmployee.password}
+              onChange={handleInputChange}
             />
             <button
               type="button"
-              onMouseDown={() => setShowUpdatePassword(true)}
-              onMouseUp={() => setShowUpdatePassword(false)}
-              onMouseLeave={() => setShowUpdatePassword(false)}
+              onMouseDown={() => setShowPassword(true)}
+              onMouseUp={() => setShowPassword(false)}
+              onMouseLeave={() => setShowPassword(false)}
             >
               👁
             </button>
           </div>
-          <button onClick={handleUpdateEmployee}>Actualizar Empleado</button>
-          <button onClick={handleCancelUpdate}>Cancelar</button>
+          <input
+            type={showPassword ? "text" : "password"}
+            name="confirmPassword"
+            placeholder="Confirmar Contraseña"
+            value={newEmployee.confirmPassword}
+            onChange={handleInputChange}
+          />
+          <button onClick={handleAddEmployee}>Agregar Empleado</button>
         </div>
-      )}
 
-      {/* Lista empleados */}
-      <ul>
-        {employees.map(employee => (
-          <li key={employee.name}>
-            {employee.name} - {employee.role}
-            <button onClick={() => handleSelectEmployee(employee)}>Editar</button>
-            <button onClick={() => handleDeleteEmployee(employee.name)}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+        {/* Formulario para actualizar */}
+        {selectedEmployee && (
+          <div className="form-section">
+            <h2>Actualizar Empleado: {selectedEmployee.name}</h2>
+            <select
+              name="role"
+              value={updateEmployee.role}
+              onChange={handleUpdateInputChange}
+            >
+              <option value="">Escoge un rol</option>
+              <option value="encargado">Encargado</option>
+              <option value="camarero">Camarero</option>
+              <option value="cocina">Cocina</option>
+            </select>
+            <input
+              type="text"
+              name="securityAnswer"
+              placeholder="Nombre de su primera mascota"
+              value={updateEmployee.securityAnswer}
+              onChange={handleUpdateInputChange}
+            />
+            <div className="password-input">
+              <input
+                type={showUpdatePassword ? "text" : "password"}
+                name="password"
+                placeholder="Nueva Contraseña"
+                value={updateEmployee.password}
+                onChange={handleUpdateInputChange}
+              />
+              <button
+                type="button"
+                onMouseDown={() => setShowUpdatePassword(true)}
+                onMouseUp={() => setShowUpdatePassword(false)}
+                onMouseLeave={() => setShowUpdatePassword(false)}
+              >
+                👁
+              </button>
+            </div>
+            <button onClick={handleUpdateEmployee}>Actualizar Empleado</button>
+            <button onClick={handleCancelUpdate}>Cancelar</button>
+          </div>
+        )}
+
+        {/* Lista empleados */}
+        <div className="employee-list-section">
+          <h2>Lista de Empleados</h2>
+          <ul>
+            {employees.map(employee => (
+              <li key={employee.name}>
+                <span>{employee.name} - {employee.role}</span>
+                <span>
+                  <button onClick={() => handleSelectEmployee(employee)}>Editar</button>
+                  <button onClick={() => handleDeleteEmployee(employee.name)}>Eliminar</button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

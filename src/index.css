@@ -1,38 +1,23 @@
 :root {
+  --color-bg: #EBECF0;
+  --color-shadow: #BABECC;
+  --color-white: #FFF;
+  --color-text: #61677C;
   --color-red: #AE1100;
-  --color-red-dark: #8a0c00;
-  --color-bg: #EBECF0;
-  --color-shadow: #BABECC;
-  --color-white: #FFF;
-  --color-text: #222f3e;
-  --color-shadow-inset: rgba(186, 190, 204, 0.5);
-  --color-white-inset: rgba(255,255,255,0.7);
-}
-
-body.light-theme {
-  --color-bg: #EBECF0;
-  --color-shadow: #BABECC;
-  --color-white: #FFF;
-  --color-text: #222f3e;
-  --color-shadow-inset: rgba(186, 190, 204, 0.5);
-  --color-white-inset: rgba(255,255,255,0.7);
-  --color-red-btn: var(--color-red);
-  --color-red-btn-text: #fff;
-  --color-gray-btn: var(--color-shadow);
-  --color-gray-btn-text: var(--color-bg);
+  --color-shadow-inset: #8a8f9a40;
+  --color-white-inset: #ffffff80;
+  --color-title: #adb1be;
 }
 
 body.dark-theme {
-  --color-bg: #232734;
-  --color-shadow: #181a20;
-  --color-white: #2d313c;
-  --color-text: #f4f4f9;
-  --color-shadow-inset: rgba(0,0,0,0.7);
-  --color-white-inset: rgba(45,49,60,0.75);
-  --color-red-btn: var(--color-red-dark);
-  --color-red-btn-text: #fff;
-  --color-gray-btn: #181a20;
-  --color-gray-btn-text: #b1b1b1;
+  --color-bg: #22262f;
+  --color-shadow: #1a1d24;
+  --color-white: #1a1d24;
+  --color-text: #c3cad9;
+  --color-red: #e83a2e;
+  --color-shadow-inset: #14181f90;
+  --color-white-inset: #41475380;
+  --color-title: #c3cad9;
 }
 
 /* ---------- ESTÉTICA GENERAL ---------- */
@@ -61,8 +46,8 @@ a:hover {
   color: var(--color-text);
 }
 
-h1, h2 {
-  color: var(--color-text);
+h1, h2, h3 {
+   color: var(--color-title);
   text-shadow: 1px 1px 1px var(--color-white);
 }
 

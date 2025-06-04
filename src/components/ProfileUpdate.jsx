@@ -76,19 +76,17 @@ const ProfileUpdate = ({ theme, setTheme }) => {
   };
 
   return (
-    <div className="page-wrapper">
-      <div className="profile-update-container">
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    <div className="dashboard-container">
+      <div className="dashboard-box">
+        <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
           <ThemeSwitch theme={theme} setTheme={setTheme} />
         </div>
-
         <h1>Bienvenido, {userData.name}</h1>
-
         {!editing ? (
-          <div className="button-group">
-            <button onClick={() => setEditing(true)}>Actualizar Perfil</button>
-            <button onClick={handleLogout}>Cerrar Sesión</button>
-            <button onClick={() => navigate('/dashboard')}>Volver</button>
+          <div className="dashboard-btn-group">
+            <button className="dashboard-btn" onClick={() => setEditing(true)}>Actualizar Perfil</button>
+            <button className="dashboard-btn" onClick={handleLogout}>Cerrar Sesión</button>
+            <button className="dashboard-btn" onClick={() => navigate('/dashboard')}>Volver</button>
           </div>
         ) : (
           <form onSubmit={handleUpdate} className="profile-form">
@@ -124,6 +122,7 @@ const ProfileUpdate = ({ theme, setTheme }) => {
                 onMouseUp={() => setShowPassword(false)}
                 onMouseLeave={() => setShowPassword(false)}
                 className="eye-btn"
+                tabIndex={-1}
               >
                 👁
               </button>
@@ -143,14 +142,15 @@ const ProfileUpdate = ({ theme, setTheme }) => {
                 onMouseUp={() => setShowConfirmPassword(false)}
                 onMouseLeave={() => setShowConfirmPassword(false)}
                 className="eye-btn"
+                tabIndex={-1}
               >
                 👁
               </button>
             </div>
 
-            <div className="button-group">
-              <button type="submit">Guardar Cambios</button>
-              <button type="button" onClick={() => setEditing(false)}>Cancelar</button>
+            <div className="dashboard-btn-group">
+              <button className="dashboard-btn" type="submit">Guardar Cambios</button>
+              <button className="dashboard-btn" type="button" onClick={() => setEditing(false)}>Cancelar</button>
             </div>
           </form>
         )}
