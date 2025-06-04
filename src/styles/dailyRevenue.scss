@@ -178,3 +178,38 @@ $ruler: 16px;
     max-width: 100vw;
   }
 }
+
+.revenue-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $ruler / 2 $ruler;
+  border-radius: $ruler;
+  background: var(--color-bg);
+  box-shadow: -3px -3px 8px var(--color-white), 3px 3px 8px var(--color-shadow);
+  margin-bottom: 1rem;
+  transition: background-color 0.3s;
+  gap: 1.5rem;
+
+  .revenue-list-date, .revenue-list-total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 110px;
+  }
+
+  .revenue-label {
+    font-size: 0.92rem;
+    color: var(--color-shadow);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+    text-shadow: 1px 1px 0 var(--color-white);
+  }
+  .revenue-value {
+    font-size: 1.14rem;
+    font-weight: bold;
+    color: var(--color-text);
+    text-shadow: 1px 1px 0 var(--color-white);
+  }
+}
