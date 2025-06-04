@@ -9,14 +9,11 @@ import { FiHome } from 'react-icons/fi';
 import ThemeSwitch from './ThemeSwitch';
 
 const DailyRevenue = () => {
-  // Estado tema: "light" o "dark"
   const [theme, setTheme] = useState('light');
-
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) setTheme(savedTheme);
   }, []);
-
   useEffect(() => {
     document.body.classList.toggle('dark-theme', theme === 'dark');
     localStorage.setItem('theme', theme);
@@ -34,8 +31,6 @@ const DailyRevenue = () => {
       key: 'selection'
     }
   ]);
-  const [todayTotal, setTodayTotal] = useState(0);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,7 +39,6 @@ const DailyRevenue = () => {
 
   useEffect(() => {
     setFilteredRevenues(dailyRevenues);
-    fetchTodayTotal();
   }, [dailyRevenues]);
 
   useEffect(() => {
@@ -62,27 +56,6 @@ const DailyRevenue = () => {
     }
   };
 
-  const fetchTodayTotal = async () => {
-    try {
-      const today = format(new Date(), 'yyyy-MM-dd');
-      // 1. Total ya cobrado (en daily_revenue)
-      const resRevenue = await axios.get(apiUrl + '/api/dailyRevenue');
-      const todayRevenue = resRevenue.data.find(r => r.date === today);
-      const revenueTotal = todayRevenue ? Number(todayRevenue.total) : 0;
-
-      // 2. Total pendiente (en orders)
-      const resOrders = await axios.get(apiUrl + '/api/orders');
-      const pendingOrders = resOrders.data.filter(
-        o => o.created_at && o.created_at.slice(0, 10) === today
-      );
-      const pendingTotal = pendingOrders.reduce((acc, o) => acc + Number(o.total), 0);
-
-      setTodayTotal(revenueTotal + pendingTotal);
-    } catch (err) {
-      setTodayTotal(0);
-    }
-  };
-
   const handleEndDay = async () => {
     setLoading(true);
     setMessage('');
@@ -90,14 +63,9 @@ const DailyRevenue = () => {
       const res = await axios.post(apiUrl + '/api/dailyRevenue/end-day');
       setMessage(`Día finalizado. Total ingresado: $${res.data.total}`);
       fetchDailyRevenues();
-      fetchTodayTotal();
     } catch (error) {
       console.error('Error finalizando el día:', error);
-      if (error.response?.status === 400) {
-        setMessage("No hay pedidos pendientes para finalizar hoy. Probablemente ya cobraste todo.");
-      } else {
-        setMessage(error.response?.data?.message || 'Error finalizando el día');
-      }
+      setMessage(error.response?.data?.message || 'Error finalizando el día');
     }
     setLoading(false);
   };
@@ -105,13 +73,15 @@ const DailyRevenue = () => {
   const filterRevenues = () => {
     const start = format(range[0].startDate, 'yyyy-MM-dd');
     const end = format(range[0].endDate, 'yyyy-MM-dd');
-
-    const filtered = dailyRevenues.filter((r) => {
-      return r.date >= start && r.date <= end;
-    });
-
+    const filtered = dailyRevenues.filter((r) => r.date >= start && r.date <= end);
     setFilteredRevenues(filtered);
   };
+
+  // Nuevo: total cobrado hoy
+  const totalHoy =
+    Number(
+      dailyRevenues.find(r => r.date === format(new Date(), 'yyyy-MM-dd'))?.total || 0
+    ).toFixed(2);
 
   return (
     <div className="daily-revenue-container">
@@ -126,7 +96,9 @@ const DailyRevenue = () => {
       </header>
 
       <div style={{ margin: "1rem 0" }}>
-        <strong>Total ganado hoy: ${Number(todayTotal).toFixed(2)}</strong>
+        <strong>Total cobrado hoy: ${totalHoy}</strong>
+        {/* Botón temporal para probar */}
+        <button style={{marginLeft:8}} onClick={fetchDailyRevenues}>Actualizar ingresos</button>
       </div>
 
       <button onClick={handleEndDay} disabled={loading}>
@@ -139,7 +111,6 @@ const DailyRevenue = () => {
         <button
           onClick={() => {
             if (showCalendar) {
-              // Cerrar calendario y resetear filtro
               const today = new Date();
               const resetRange = [{
                 startDate: today,
@@ -147,7 +118,7 @@ const DailyRevenue = () => {
                 key: 'selection'
               }];
               setRange(resetRange);
-              setFilteredRevenues(dailyRevenues); // Mostrar todos
+              setFilteredRevenues(dailyRevenues);
               setShowCalendar(false);
             } else {
               setShowCalendar(true);
@@ -156,7 +127,6 @@ const DailyRevenue = () => {
         >
           {showCalendar ? 'Cerrar Calendario' : 'Seleccionar Rango de Fechas'}
         </button>
-
         {showCalendar && (
           <div className="calendar-container">
             <DateRange
