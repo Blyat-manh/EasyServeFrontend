@@ -162,20 +162,22 @@ const DailyRevenue = () => {
         {filteredRevenues.length === 0 ? (
           <p className="empty-revenue-msg">No hay ingresos en el rango seleccionado.</p>
         ) : (
-          <div className="revenue-list-cards">
+          <ul>
             {filteredRevenues.map(({ id, date, total }) => (
-              <div key={id} className="revenue-card">
-                <div className="revenue-card-date">
-                  <span>Fecha:</span>
-                  <span>{date}</span>
+              <li key={id} className="revenue-list-item">
+                <div className="revenue-list-date">
+                  <span className="revenue-label">Fecha</span>
+                  <span className="revenue-value">{date}</span>
                 </div>
-                <div className="revenue-card-total">
-                  <span>Total:</span>
-                  <span>${isNaN(total) ? 'N/A' : Number(total).toFixed(2)}</span>
+                <div className="revenue-list-total">
+                  <span className="revenue-label">Total</span>
+                  <span className="revenue-value">
+                    ${isNaN(total) ? 'N/A' : Number(total).toFixed(2)}
+                  </span>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
     </div>
