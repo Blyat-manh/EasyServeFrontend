@@ -58,7 +58,6 @@ const DailyRevenue = () => {
 
   const fetchDailyRevenues = async () => {
     try {
-      // Ajuste: Usa la ruta que sí funciona en el backend
       const res = await axios.get(apiUrl + '/api/dailyRevenue');
       setDailyRevenues(res.data);
     } catch (error) {
@@ -66,14 +65,12 @@ const DailyRevenue = () => {
     }
   };
 
-  // Obtener el total ganado hoy de dailyRevenue (ya que paidOrders no está en backend público)
+  // Obtener el total ganado HOY de paid_orders
   const fetchTodayTotal = async () => {
     try {
-      // Ajuste: Usa la ruta que sí funciona en el backend
-      const res = await axios.get(apiUrl + '/api/dailyRevenue');
-      const today = format(new Date(), 'yyyy-MM-dd');
-      const todayPaid = res.data.find(r => r.date === today);
-      setTodayTotal(todayPaid ? Number(todayPaid.total) : 0);
+      // Aquí llamamos al endpoint nuevo:
+      const res = await axios.get(apiUrl + '/api/dailyRevenue/currentPaidOrdersTotal');
+      setTodayTotal(Number(res.data.total) || 0);
     } catch (error) {
       setTodayTotal(0);
     }
