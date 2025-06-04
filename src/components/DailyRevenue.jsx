@@ -22,7 +22,7 @@ const DailyRevenue = () => {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const [paidRevenues, setPaidRevenues] = useState([]);
+  const [dailyRevenues, setDailyRevenues] = useState([]);
   const [filteredRevenues, setFilteredRevenues] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -38,28 +38,27 @@ const DailyRevenue = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchPaidRevenues();
+    fetchDailyRevenues();
   }, []);
 
   // Mostrar todos los ingresos cuando se cargan inicialmente
   useEffect(() => {
-    setFilteredRevenues(paidRevenues);
-  }, [paidRevenues]);
+    setFilteredRevenues(dailyRevenues);
+  }, [dailyRevenues]);
 
   // Filtrar solo si el calendario está abierto
   useEffect(() => {
     if (showCalendar) {
       filterRevenues();
     }
-    // eslint-disable-next-line
   }, [range]);
 
-  const fetchPaidRevenues = async () => {
+  const fetchDailyRevenues = async () => {
     try {
-      const res = await axios.get(apiUrl + '/api/dailyPaidOrders');
-      setPaidRevenues(res.data);
+      const res = await axios.get(apiUrl + '/api/dailyRevenue');
+      setDailyRevenues(res.data);
     } catch (error) {
-      console.error('Error fetching paid revenues:', error);
+      console.error('Error fetching daily revenues:', error);
     }
   };
 
@@ -69,7 +68,7 @@ const DailyRevenue = () => {
     try {
       const res = await axios.post(apiUrl + '/api/dailyRevenue/end-day');
       setMessage(`Día finalizado. Total ingresado: $${res.data.total}`);
-      fetchPaidRevenues();
+      fetchDailyRevenues();
     } catch (error) {
       console.error('Error finalizando el día:', error);
       setMessage(error.response?.data?.message || 'Error finalizando el día');
@@ -81,7 +80,7 @@ const DailyRevenue = () => {
     const start = format(range[0].startDate, 'yyyy-MM-dd');
     const end = format(range[0].endDate, 'yyyy-MM-dd');
 
-    const filtered = paidRevenues.filter((r) => {
+    const filtered = dailyRevenues.filter((r) => {
       return r.date >= start && r.date <= end;
     });
 
@@ -91,7 +90,7 @@ const DailyRevenue = () => {
   return (
     <div className="daily-revenue-container">
       <header className="header">
-        <h1>Ingresos de Pedidos Cobrados</h1>
+        <h1>Ingresos Diarios</h1>
         <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
           <ThemeSwitch theme={theme} setTheme={setTheme} />
           <button className="home-btn" onClick={() => navigate('/dashboard')}>
@@ -117,7 +116,7 @@ const DailyRevenue = () => {
                 key: 'selection'
               }];
               setRange(resetRange);
-              setFilteredRevenues(paidRevenues); // Mostrar todos
+              setFilteredRevenues(dailyRevenues); // Mostrar todos
               setShowCalendar(false);
             } else {
               setShowCalendar(true);
@@ -139,14 +138,14 @@ const DailyRevenue = () => {
         )}
       </div>
 
-      <h2>Historial de pedidos cobrados (sin cerrar día)</h2>
+      <h2>Historial de ingresos</h2>
       <div className="revenue-list-container">
         {filteredRevenues.length === 0 ? (
           <p>No hay ingresos en el rango seleccionado.</p>
         ) : (
           <ul>
-            {filteredRevenues.map(({ date, total }, idx) => (
-              <li key={date + idx}>
+            {filteredRevenues.map(({ id, date, total }) => (
+              <li key={id}>
                 Fecha: {date} — Total: ${isNaN(total) ? 'N/A' : Number(total).toFixed(2)}
               </li>
             ))}
