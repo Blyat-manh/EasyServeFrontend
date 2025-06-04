@@ -34,11 +34,13 @@ const DailyRevenue = () => {
       key: 'selection'
     }
   ]);
+  const [todayTotal, setTodayTotal] = useState(0);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchDailyRevenues();
+    fetchTodayTotal();
   }, []);
 
   // Mostrar todos los ingresos cuando se cargan inicialmente
@@ -51,6 +53,7 @@ const DailyRevenue = () => {
     if (showCalendar) {
       filterRevenues();
     }
+    // eslint-disable-next-line
   }, [range]);
 
   const fetchDailyRevenues = async () => {
@@ -62,6 +65,18 @@ const DailyRevenue = () => {
     }
   };
 
+  // Obtener el total ganado hoy de la tabla de pedidos cobrados (paid_orders)
+  const fetchTodayTotal = async () => {
+    try {
+      const res = await axios.get(apiUrl + '/api/dailyPaidOrders'); // [{date, total}, ...]
+      const today = format(new Date(), 'yyyy-MM-dd');
+      const todayPaid = res.data.find(r => r.date === today);
+      setTodayTotal(todayPaid ? Number(todayPaid.total) : 0);
+    } catch (error) {
+      setTodayTotal(0);
+    }
+  };
+
   const handleEndDay = async () => {
     setLoading(true);
     setMessage('');
@@ -69,6 +84,7 @@ const DailyRevenue = () => {
       const res = await axios.post(apiUrl + '/api/dailyRevenue/end-day');
       setMessage(`Día finalizado. Total ingresado: $${res.data.total}`);
       fetchDailyRevenues();
+      fetchTodayTotal();
     } catch (error) {
       console.error('Error finalizando el día:', error);
       setMessage(error.response?.data?.message || 'Error finalizando el día');
@@ -101,6 +117,9 @@ const DailyRevenue = () => {
       <button onClick={handleEndDay} disabled={loading}>
         {loading ? 'Procesando...' : 'Finalizar Día'}
       </button>
+      <div style={{marginTop: '10px', marginBottom: '10px', fontWeight: 600, color: '#2d8659'}}>
+        Total ganado hasta ahora: ${Number(todayTotal).toFixed(2)}
+      </div>
       {message && <p>{message}</p>}
 
       <h2>Filtrar por rango de fechas</h2>
@@ -141,15 +160,22 @@ const DailyRevenue = () => {
       <h2>Historial de ingresos</h2>
       <div className="revenue-list-container">
         {filteredRevenues.length === 0 ? (
-          <p>No hay ingresos en el rango seleccionado.</p>
+          <p className="empty-revenue-msg">No hay ingresos en el rango seleccionado.</p>
         ) : (
-          <ul>
+          <div className="revenue-list-cards">
             {filteredRevenues.map(({ id, date, total }) => (
-              <li key={id}>
-                Fecha: {date} — Total: ${isNaN(total) ? 'N/A' : Number(total).toFixed(2)}
-              </li>
+              <div key={id} className="revenue-card">
+                <div className="revenue-card-date">
+                  <span>Fecha:</span>
+                  <span>{date}</span>
+                </div>
+                <div className="revenue-card-total">
+                  <span>Total:</span>
+                  <span>${isNaN(total) ? 'N/A' : Number(total).toFixed(2)}</span>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
