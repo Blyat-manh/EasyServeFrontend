@@ -167,7 +167,9 @@ const DailyRevenue = () => {
               <li key={id} className="revenue-list-item">
                 <div className="revenue-list-date">
                   <span className="revenue-label">Fecha</span>
-                  <span className="revenue-value">{date}</span>
+                  <span className="revenue-value">
+                    {format(new Date(date), 'dd/MM/yyyy')}
+                  </span>
                 </div>
                 <div className="revenue-list-total">
                   <span className="revenue-label">Total</span>
