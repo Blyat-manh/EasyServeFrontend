@@ -9,17 +9,20 @@ import { FiHome } from 'react-icons/fi';
 import ThemeSwitch from './ThemeSwitch';
 
 const DailyRevenue = () => {
+  // Estado tema: "light" o "dark"
   const [theme, setTheme] = useState('light');
+
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) setTheme(savedTheme);
   }, []);
+
   useEffect(() => {
     document.body.classList.toggle('dark-theme', theme === 'dark');
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const [dailyRevenues, setDailyRevenues] = useState([]);
+  const [paidRevenues, setPaidRevenues] = useState([]);
   const [filteredRevenues, setFilteredRevenues] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -31,28 +34,32 @@ const DailyRevenue = () => {
       key: 'selection'
     }
   ]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchDailyRevenues();
+    fetchPaidRevenues();
   }, []);
 
+  // Mostrar todos los ingresos cuando se cargan inicialmente
   useEffect(() => {
-    setFilteredRevenues(dailyRevenues);
-  }, [dailyRevenues]);
+    setFilteredRevenues(paidRevenues);
+  }, [paidRevenues]);
 
+  // Filtrar solo si el calendario está abierto
   useEffect(() => {
     if (showCalendar) {
       filterRevenues();
     }
+    // eslint-disable-next-line
   }, [range]);
 
-  const fetchDailyRevenues = async () => {
+  const fetchPaidRevenues = async () => {
     try {
-      const res = await axios.get(apiUrl + '/api/dailyRevenue');
-      setDailyRevenues(res.data);
+      const res = await axios.get(apiUrl + '/api/dailyPaidOrders');
+      setPaidRevenues(res.data);
     } catch (error) {
-      console.error('Error fetching daily revenues:', error);
+      console.error('Error fetching paid revenues:', error);
     }
   };
 
@@ -62,7 +69,7 @@ const DailyRevenue = () => {
     try {
       const res = await axios.post(apiUrl + '/api/dailyRevenue/end-day');
       setMessage(`Día finalizado. Total ingresado: $${res.data.total}`);
-      fetchDailyRevenues();
+      fetchPaidRevenues();
     } catch (error) {
       console.error('Error finalizando el día:', error);
       setMessage(error.response?.data?.message || 'Error finalizando el día');
@@ -73,20 +80,18 @@ const DailyRevenue = () => {
   const filterRevenues = () => {
     const start = format(range[0].startDate, 'yyyy-MM-dd');
     const end = format(range[0].endDate, 'yyyy-MM-dd');
-    const filtered = dailyRevenues.filter((r) => r.date >= start && r.date <= end);
+
+    const filtered = paidRevenues.filter((r) => {
+      return r.date >= start && r.date <= end;
+    });
+
     setFilteredRevenues(filtered);
   };
-
-  // Nuevo: total cobrado hoy
-  const totalHoy =
-    Number(
-      dailyRevenues.find(r => r.date === format(new Date(), 'yyyy-MM-dd'))?.total || 0
-    ).toFixed(2);
 
   return (
     <div className="daily-revenue-container">
       <header className="header">
-        <h1>Ingresos Diarios</h1>
+        <h1>Ingresos de Pedidos Cobrados</h1>
         <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
           <ThemeSwitch theme={theme} setTheme={setTheme} />
           <button className="home-btn" onClick={() => navigate('/dashboard')}>
@@ -94,13 +99,6 @@ const DailyRevenue = () => {
           </button>
         </div>
       </header>
-
-      <div style={{ margin: "1rem 0" }}>
-        <strong>Total cobrado hoy: ${totalHoy}</strong>
-        {/* Botón temporal para probar */}
-        <button style={{marginLeft:8}} onClick={fetchDailyRevenues}>Actualizar ingresos</button>
-      </div>
-
       <button onClick={handleEndDay} disabled={loading}>
         {loading ? 'Procesando...' : 'Finalizar Día'}
       </button>
@@ -111,6 +109,7 @@ const DailyRevenue = () => {
         <button
           onClick={() => {
             if (showCalendar) {
+              // Cerrar calendario y resetear filtro
               const today = new Date();
               const resetRange = [{
                 startDate: today,
@@ -118,7 +117,7 @@ const DailyRevenue = () => {
                 key: 'selection'
               }];
               setRange(resetRange);
-              setFilteredRevenues(dailyRevenues);
+              setFilteredRevenues(paidRevenues); // Mostrar todos
               setShowCalendar(false);
             } else {
               setShowCalendar(true);
@@ -127,6 +126,7 @@ const DailyRevenue = () => {
         >
           {showCalendar ? 'Cerrar Calendario' : 'Seleccionar Rango de Fechas'}
         </button>
+
         {showCalendar && (
           <div className="calendar-container">
             <DateRange
@@ -139,14 +139,14 @@ const DailyRevenue = () => {
         )}
       </div>
 
-      <h2>Historial de ingresos</h2>
+      <h2>Historial de pedidos cobrados (sin cerrar día)</h2>
       <div className="revenue-list-container">
         {filteredRevenues.length === 0 ? (
           <p>No hay ingresos en el rango seleccionado.</p>
         ) : (
           <ul>
-            {filteredRevenues.map(({ id, date, total }) => (
-              <li key={id}>
+            {filteredRevenues.map(({ date, total }, idx) => (
+              <li key={date + idx}>
                 Fecha: {date} — Total: ${isNaN(total) ? 'N/A' : Number(total).toFixed(2)}
               </li>
             ))}
