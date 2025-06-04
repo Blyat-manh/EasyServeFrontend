@@ -34,6 +34,7 @@ const DailyRevenue = () => {
       key: 'selection'
     }
   ]);
+  const [todayTotal, setTodayTotal] = useState(0);
 
   const navigate = useNavigate();
 
@@ -41,17 +42,16 @@ const DailyRevenue = () => {
     fetchDailyRevenues();
   }, []);
 
-  // Mostrar todos los ingresos cuando se cargan inicialmente
   useEffect(() => {
     setFilteredRevenues(dailyRevenues);
+    fetchTodayTotal();
   }, [dailyRevenues]);
 
-  // Filtrar solo si el calendario está abierto
   useEffect(() => {
     if (showCalendar) {
       filterRevenues();
     }
-  }, [range]);  
+  }, [range]);
 
   const fetchDailyRevenues = async () => {
     try {
@@ -62,6 +62,27 @@ const DailyRevenue = () => {
     }
   };
 
+  const fetchTodayTotal = async () => {
+    try {
+      const today = format(new Date(), 'yyyy-MM-dd');
+      // 1. Total ya cobrado (en daily_revenue)
+      const resRevenue = await axios.get(apiUrl + '/api/dailyRevenue');
+      const todayRevenue = resRevenue.data.find(r => r.date === today);
+      const revenueTotal = todayRevenue ? Number(todayRevenue.total) : 0;
+
+      // 2. Total pendiente (en orders)
+      const resOrders = await axios.get(apiUrl + '/api/orders');
+      const pendingOrders = resOrders.data.filter(
+        o => o.created_at && o.created_at.slice(0, 10) === today
+      );
+      const pendingTotal = pendingOrders.reduce((acc, o) => acc + Number(o.total), 0);
+
+      setTodayTotal(revenueTotal + pendingTotal);
+    } catch (err) {
+      setTodayTotal(0);
+    }
+  };
+
   const handleEndDay = async () => {
     setLoading(true);
     setMessage('');
@@ -69,9 +90,14 @@ const DailyRevenue = () => {
       const res = await axios.post(apiUrl + '/api/dailyRevenue/end-day');
       setMessage(`Día finalizado. Total ingresado: $${res.data.total}`);
       fetchDailyRevenues();
+      fetchTodayTotal();
     } catch (error) {
       console.error('Error finalizando el día:', error);
-      setMessage(error.response?.data?.message || 'Error finalizando el día');
+      if (error.response?.status === 400) {
+        setMessage("No hay pedidos pendientes para finalizar hoy. Probablemente ya cobraste todo.");
+      } else {
+        setMessage(error.response?.data?.message || 'Error finalizando el día');
+      }
     }
     setLoading(false);
   };
@@ -98,6 +124,11 @@ const DailyRevenue = () => {
           </button>
         </div>
       </header>
+
+      <div style={{ margin: "1rem 0" }}>
+        <strong>Total ganado hoy: ${Number(todayTotal).toFixed(2)}</strong>
+      </div>
+
       <button onClick={handleEndDay} disabled={loading}>
         {loading ? 'Procesando...' : 'Finalizar Día'}
       </button>
