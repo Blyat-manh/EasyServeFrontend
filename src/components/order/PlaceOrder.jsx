@@ -8,8 +8,9 @@ import OrderSummary from "./OrderSummary";
 import TablesOrders from "./TablesOrders";
 import EditOrderModal from "./EditOrderModal";
 import { FiHome } from "react-icons/fi";
+import ThemeSwitch from '../ThemeSwitch';
 
-const PlaceOrder = () => {
+const PlaceOrder = ({ theme, setTheme }) => {
   const [tables, setTables] = useState({});
   const [selectedTable, setSelectedTable] = useState("");
   const [inventory, setInventory] = useState([]);
@@ -222,6 +223,7 @@ const PlaceOrder = () => {
     <div className="place-order-container">
       <header className="place-order-header">
         <h1>Hacer Pedido</h1>
+        <ThemeSwitch theme={theme} setTheme={setTheme} />
         <button className="home-btn" onClick={() => navigate('/dashboard')}>
           <FiHome />
         </button>

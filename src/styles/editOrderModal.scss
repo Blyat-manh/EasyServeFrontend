@@ -1,8 +1,8 @@
 @import './placeOrder.scss';
 
 .edit-order-modal {
-  background-color: $color-bg;
-  box-shadow: -4px -4px 12px $color-white, 4px 4px 12px $color-shadow;
+  background-color: --color-bg;
+  box-shadow: -4px -4px 12px --color-white, 4px 4px 12px --color-shadow;
   border-radius: $ruler;
   padding: $ruler;
   width: 90%;

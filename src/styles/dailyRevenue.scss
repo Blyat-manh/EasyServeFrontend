@@ -89,8 +89,8 @@ $ruler: 16px;
 
 .end-day-btn {
   margin: 0 0 $ruler 0;
-  background: var(--color-red);
-  color: #fff;
+  background: var(--color-white);
+  color: var(--color-text);
   border-radius: $ruler;
   box-shadow:
     -4px -4px 12px var(--color-white),

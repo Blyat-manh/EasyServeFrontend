@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import '../styles/tablesManager.scss';
 import { apiUrl } from "../App";
 import { useNavigate } from "react-router-dom";
-import TablesMap from "./TablesMap"; // ajusta la ruta según tu estructura
+import ThemeSwitch from "./ThemeSwitch";
+import TablesMap from "./TablesMap"; 
+import "../styles/tablesManager.scss";
 import { FiHome } from "react-icons/fi";
 
-
-const TablesManager = () => {
+const TablesManager = ({ theme, setTheme }) => {
   const navigate = useNavigate();
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -84,71 +84,84 @@ const TablesManager = () => {
 
   return (
     <div className="tables-manager">
-      <h2>Gestión de Mesas</h2>
-      <button className="home-btn" onClick={() => navigate('/dashboard')}>
-          <FiHome />
-        </button>
-      <div className="create-table">
-        <input
-          type="number"
-          min="1"
-          placeholder="Nuevo número de mesa"
-          value={newTableNumber}
-          onChange={(e) => setNewTableNumber(e.target.value)}
-        />
-        <button onClick={handleCreate}>Crear Mesa</button>
-      </div>
+      <div className="dashboard-box">
+        <h2>Gestión de Mesas</h2>
+        <div style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          gap: "10px",
+          marginBottom: "1.5rem"
+        }}>
+          <button className="home-btn" onClick={() => navigate('/dashboard')}>
+            <FiHome />
+          </button>
+          <ThemeSwitch theme={theme} setTheme={setTheme} />
+        </div>
+        
+        <div className="create-table">
+          <input
+            type="number"
+            min="1"
+            placeholder="Nuevo número de mesa"
+            value={newTableNumber}
+            onChange={(e) => setNewTableNumber(e.target.value)}
+          />
+          <button onClick={handleCreate}>Crear Mesa</button>
+        </div>
 
-      {loading && <p>Cargando mesas...</p>}
-      {error && <p className="error">{error}</p>}
+        {loading && <p>Cargando mesas...</p>}
+        {error && <p className="error">{error}</p>}
 
-      <table>
-        <thead>
-          <tr>
-            <th>Número de Mesa</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tables.length === 0 && !loading && (
+        <table>
+          <thead>
             <tr>
-              <td colSpan="2">No hay mesas</td>
+              <th>Número de Mesa</th>
+              <th>Acciones</th>
             </tr>
-          )}
-          {tables.map((table) => (
-            <tr key={table.id}>
-              <td>
-                {editTableId === table.id ? (
-                  <input
-                    type="number"
-                    min="1"
-                    value={editTableNumber}
-                    onChange={(e) => setEditTableNumber(e.target.value)}
-                  />
-                ) : (
-                  table.table_number
-                )}
-              </td>
-              <td>
-                <div className="action-buttons">
+          </thead>
+          <tbody>
+            {tables.length === 0 && !loading && (
+              <tr>
+                <td colSpan="2">No hay mesas</td>
+              </tr>
+            )}
+            {tables.map((table) => (
+              <tr key={table.id}>
+                <td>
                   {editTableId === table.id ? (
-                    <>
-                      <button className="btn-save" onClick={saveEdit}>Guardar</button>
-                      <button className="btn-cancel" onClick={cancelEdit}>Cancelar</button>
-                    </>
+                    <input
+                      type="number"
+                      min="1"
+                      value={editTableNumber}
+                      onChange={(e) => setEditTableNumber(e.target.value)}
+                    />
                   ) : (
-                    <>
-                      <button className="btn-edit" onClick={() => startEdit(table)}>Editar</button>
-                      <button className="btn-delete" onClick={() => deleteTable(table.id)}>Eliminar</button>
-                    </>
+                    table.table_number
                   )}
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <TablesMap />
+                </td>
+                <td>
+                  <div className="action-buttons">
+                    {editTableId === table.id ? (
+                      <>
+                        <button className="btn-save" onClick={saveEdit}>Guardar</button>
+                        <button className="btn-cancel" onClick={cancelEdit}>Cancelar</button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="btn-edit" onClick={() => startEdit(table)}>Editar</button>
+                        <button className="btn-delete" onClick={() => deleteTable(table.id)}>Eliminar</button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <TablesMap />
+      </div>
     </div>
   );
 };

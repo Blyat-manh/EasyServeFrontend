@@ -4,6 +4,7 @@ import { apiUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
 import ThemeSwitch from './ThemeSwitch';
 import '../styles/profileUpdate.scss';
+import { FiHome } from 'react-icons/fi';
 
 const ProfileUpdate = ({ theme, setTheme }) => {
   const [userData, setUserData] = useState({
@@ -78,15 +79,18 @@ const ProfileUpdate = ({ theme, setTheme }) => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-box">
+        
         <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
           <ThemeSwitch theme={theme} setTheme={setTheme} />
+          <button className="home-btn" onClick={() => navigate('/dashboard')}>
+            <FiHome />
+          </button>
         </div>
         <h1>Bienvenido, {userData.name}</h1>
         {!editing ? (
           <div className="dashboard-btn-group">
             <button className="dashboard-btn" onClick={() => setEditing(true)}>Actualizar Perfil</button>
             <button className="dashboard-btn" onClick={handleLogout}>Cerrar Sesión</button>
-            <button className="dashboard-btn" onClick={() => navigate('/dashboard')}>Volver</button>
           </div>
         ) : (
           <form onSubmit={handleUpdate} className="profile-form">

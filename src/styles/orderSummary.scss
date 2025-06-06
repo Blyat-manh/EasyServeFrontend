@@ -1,8 +1,8 @@
 @import './placeOrder.scss';
 
 .order-summary {
-  background-color: $color-bg;
-  box-shadow: -4px -4px 12px $color-white, 4px 4px 12px $color-shadow;
+  background-color: --color-bg;
+  box-shadow: -4px -4px 12px --color-white, 4px 4px 12px --color-shadow;
   border-radius: $ruler;
   padding: $ruler;
   margin-bottom: $ruler;
@@ -13,7 +13,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
-    color: $color-text;
+    color: --color-text;
 
     button {
       font-size: 0.8rem;
